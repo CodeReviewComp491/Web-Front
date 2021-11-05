@@ -3,7 +3,7 @@ import Head from 'next/head'
 
 const Home = (): JSX.Element => {
   return (
-    <p>Hello World</p>
+    <></>
   )
 }
 
