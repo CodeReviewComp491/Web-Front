@@ -1,12 +1,14 @@
 import React from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
+import axios from 'axios'
 import { Form } from 'antd'
 
 //components
 import Layout from 'components/global/Layout/Layout'
 import Navbar from 'components/global/Navbar/Navbar'
 import Footer from 'components/global/Footer/Footer'
+import { githubLogin } from 'components/global/authentification/githubLogin'
 
 //css
 import * as Styled from 'styles/pages/signup'
@@ -14,6 +16,11 @@ import * as Styled from 'styles/pages/signup'
 const SignUp = (): JSX.Element => {
   const onFinish = (values: any): void => {
     console.log('Success', values)
+    axios.post(`http://localhost:8080/register`, values)
+      .then(res => {
+        console.log(res.data);
+        window.location.href = "/"
+      })
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -36,7 +43,7 @@ const SignUp = (): JSX.Element => {
               onFinishFailed={onFinishFailed}
               autoComplete="off"
             >
-              <Styled.NameInputs>
+              {/* <Styled.NameInputs>
                 <Form.Item
                   name="firstName"
                   rules={[
@@ -55,7 +62,7 @@ const SignUp = (): JSX.Element => {
                 >
                   <Styled.NameInput placeholder={'Last name'} />
                 </Form.Item>
-              </Styled.NameInputs>
+              </Styled.NameInputs> */}
               <Form.Item
                 name="username"
                 rules={[
@@ -95,6 +102,7 @@ const SignUp = (): JSX.Element => {
               <Form.Item>
                 <Styled.Submit htmlType={'submit'}>Sign up</Styled.Submit>
               </Form.Item>
+              <Styled.Submit onClick={githubLogin}>Sign up with github</Styled.Submit>
             </Styled.MyForm>
             <Styled.TUMessage>
               By clicking Register, I agree that I have read and accepted{' '}
