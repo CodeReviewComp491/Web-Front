@@ -8,7 +8,7 @@ import { Form } from 'antd'
 import Layout from 'components/global/Layout/Layout'
 import Navbar from 'components/global/Navbar/Navbar'
 import Footer from 'components/global/Footer/Footer'
-import { githubLogin } from 'components/global/authentification/githubLogin'
+// import { gitlabLogin } from 'components/global/authentification/gitlabLogin'
 
 //css
 import * as Styled from 'styles/pages/signup'
@@ -19,7 +19,8 @@ const SignUp = (): JSX.Element => {
     axios.post(`http://localhost:8080/register`, values)
       .then(res => {
         console.log(res.data);
-        window.location.href = "/"
+        localStorage.setItem('token', res.data.token);
+        window.location.href = "/linkGitlab"
       })
   }
 
@@ -102,7 +103,7 @@ const SignUp = (): JSX.Element => {
               <Form.Item>
                 <Styled.Submit htmlType={'submit'}>Sign up</Styled.Submit>
               </Form.Item>
-              <Styled.Submit onClick={githubLogin}>Sign up with github</Styled.Submit>
+              {/* <Styled.Submit onClick={gitlabLogin}>Sign up with gitlab</Styled.Submit> */}
             </Styled.MyForm>
             <Styled.TUMessage>
               By clicking Register, I agree that I have read and accepted{' '}

@@ -12,16 +12,26 @@ import Footer from 'components/global/Footer/Footer'
 //css
 import * as Styled from 'styles/pages/signin'
 import FormItem from 'antd/lib/form/FormItem'
-import { githubLogin } from 'components/global/authentification/githubLogin'
+// import { gitlabLogin } from 'components/global/authentification/gitlabLogin'
 
 const SignIn = (): JSX.Element => {
 
   const onFinish = (values: any): void => {
+    const token = localStorage.getItem('token');
+    const config = {
+      headers: { Authorization: `Bearer ${token}` }
+    };
+
     console.log('Success', values);
     axios.post(`http://localhost:8080/login`, values)
       .then(res => {
         console.log(res.data);
-        window.location.href = "/"
+        localStorage.setItem('token', res.data.token);
+        axios.get(`http://localhost:8080/gitlab/me`, config)
+            .then(res => {
+                console.log(res.data)
+                location.href = `/?name=${res.data.name}`
+            })
       })
   }
 
@@ -64,7 +74,7 @@ const SignIn = (): JSX.Element => {
               <FormItem>
                 <Styled.Submit htmlType={'submit'}>Sign In</Styled.Submit>
               </FormItem>
-              <Styled.Submit onClick={githubLogin}>Sign In with github</Styled.Submit>
+              {/* <Styled.Submit onClick={gitlabLogin}>Sign In with gitlab</Styled.Submit> */}
             </Styled.MyForm>
             <Styled.LoginMessage>
               Don’t have an account?{' '}
