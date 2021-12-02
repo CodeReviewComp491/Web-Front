@@ -44,26 +44,6 @@ const SignUp = (): JSX.Element => {
               onFinishFailed={onFinishFailed}
               autoComplete="off"
             >
-              {/* <Styled.NameInputs>
-                <Form.Item
-                  name="firstName"
-                  rules={[
-                    { required: true, message: 'Please input your first name' },
-                  ]}
-                  initialValue={''}
-                >
-                  <Styled.NameInput placeholder={'First name'} />
-                </Form.Item>
-                <Form.Item
-                  name="lastName"
-                  rules={[
-                    { required: true, message: 'Please input your last name' },
-                  ]}
-                  initialValue={''}
-                >
-                  <Styled.NameInput placeholder={'Last name'} />
-                </Form.Item>
-              </Styled.NameInputs> */}
               <Form.Item
                 name="username"
                 rules={[
