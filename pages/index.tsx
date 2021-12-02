@@ -1,28 +1,27 @@
-import Head from "next/head";
+import React from 'react'
+import Head from 'next/head'
+import { useSelector } from 'react-redux'
 
 //components
-import Navbar from "components/global/Navbar/Navbar";
-import CallToSign from "components/pages/index/CallToSign/CallToSign";
-import TopProjects from "components/pages/index/TopProjects/TopProjects";
-import Footer from "components/global/Footer/Footer";
+import LandingPage from 'components/pages/index/LandingPage/LandingPage'
+import Dashboard from 'components/pages/index/Dashboard/Dashboard';
 
-//css
-import * as Styled from "styles/pages/index";
+//store
+import { AuthenticationStatus } from 'store/reducers/userReducer'
+import { GlobalState } from 'store/interfaces'
 
 const Home = (): JSX.Element => {
-  return (
-    <>
-      <Head>
-        <title>Code Review | Home</title>
-      </Head>
-      <Navbar />
-      <Styled.Wallpaper>
-        <CallToSign />
-        <TopProjects />
-      </Styled.Wallpaper>
-      <Footer/>
-    </>
-  );
-};
+  const { user }: GlobalState = useSelector<GlobalState, GlobalState>(
+    (state) => state,
+  )
 
-export default Home;
+  if (user.authenticationStatus === AuthenticationStatus.FAILED) {
+    return (
+      <LandingPage/>
+    )
+  }
+
+  return <Dashboard user={user}/>
+}
+
+export default Home
