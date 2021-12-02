@@ -30,7 +30,7 @@ const SignIn = (): JSX.Element => {
         axios.get(`http://localhost:8080/gitlab/me`, config)
             .then(res => {
                 console.log(res.data)
-                location.href = `/?name=${res.data.name}`
+                location.href = `/profil`
             })
       })
   }
