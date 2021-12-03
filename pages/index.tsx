@@ -19,9 +19,10 @@ const Home = (): JSX.Element => {
     return (
       <LandingPage/>
     )
+  } else {
+    return <Dashboard user={user}/>
   }
 
-  return <Dashboard user={user}/>
 }
 
 export default Home

@@ -5,3 +5,9 @@ export const LeftNavbar = styled.div`
   height: 100%;
   background-color: #5d5b6c;
 `;
+
+export const Title = styled.div`
+  width: 100%;
+  height: 100px;
+  background-color: #454254;
+`;

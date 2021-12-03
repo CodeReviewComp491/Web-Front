@@ -17,7 +17,8 @@ const Dashboard = ({ user }: Props): JSX.Element => {
       <Head>
         <title>Code Review | {user.name}</title>
       </Head>
-      <DashboardLayout/>
+      <DashboardLayout>
+      </DashboardLayout>
     </>
   )
 }

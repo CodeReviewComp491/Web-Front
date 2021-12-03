@@ -8,7 +8,11 @@ import TopBar from 'components/global/DashboardLayout/TopBar/TopBar';
 //css
 import * as Styled from 'components/global/DashboardLayout/styles';
 
-const DashboardLayout = (): JSX.Element => {
+interface Props {
+  children?: React.ReactNode;
+}
+
+const DashboardLayout = ({children}: Props): JSX.Element => {
   return (
     <Layout backgroundColor={'#e8e8e8'}>
       <Styled.Wrapper>
@@ -16,8 +20,9 @@ const DashboardLayout = (): JSX.Element => {
         <Styled.LayoutCenter>
           <TopBar/>
           <Styled.LayoutContent>
-
+            {children}
           </Styled.LayoutContent>
+          <Styled.LayoutFooter/>
         </Styled.LayoutCenter>
       </Styled.Wrapper>
     </Layout>

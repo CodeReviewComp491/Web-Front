@@ -3,6 +3,8 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { Form, Input, Button, Checkbox } from 'antd'
 import axios from 'axios'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 
 //components
 import Layout from 'components/global/Layout/Layout'
@@ -12,9 +14,18 @@ import Footer from 'components/global/Footer/Footer'
 //css
 import * as Styled from 'styles/pages/signin'
 import FormItem from 'antd/lib/form/FormItem'
-// import { gitlabLogin } from 'components/global/authentification/gitlabLogin'
+
+//store
+import { setUserAction } from 'store/actions/userActions';
+import { UserState, AuthenticationStatus } from 'store/reducers/userReducer';
+import { GlobalState } from 'store/interfaces';
 
 const SignIn = (): JSX.Element => {
+
+  const { user }: GlobalState = useSelector<GlobalState, GlobalState>(
+    (state) => state
+  );
+  const dispatch = useDispatch();
 
   const onFinish = (values: any): void => {
     const token = localStorage.getItem('token');
@@ -23,6 +34,7 @@ const SignIn = (): JSX.Element => {
     };
 
     console.log('Success', values);
+    dispatch(setUserAction({...user, authenticationStatus: AuthenticationStatus.SUCCESS}));
     axios.post(`http://localhost:8080/login`, values)
       .then(res => {
         console.log(res.data);

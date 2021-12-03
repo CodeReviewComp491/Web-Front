@@ -16,7 +16,7 @@ export interface UserState {
 export const initialState: UserState = {
   email: '',
   name: '',
-  authenticationStatus: AuthenticationStatus.CHECKING,
+  authenticationStatus: AuthenticationStatus.FAILED,
   token: '',
 };
 
