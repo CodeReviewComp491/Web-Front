@@ -14,7 +14,7 @@ import * as Styled from 'styles/pages/signin'
 import FormItem from 'antd/lib/form/FormItem'
 // import { gitlabLogin } from 'components/global/authentification/gitlabLogin'
 
-function clean(obj) {
+function clean(obj: any) {
   for (var propName in obj) {
     if (obj[propName] === null || obj[propName] === undefined || obj[propName] === '') {
       delete obj[propName];

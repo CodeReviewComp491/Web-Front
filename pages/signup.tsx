@@ -3,19 +3,32 @@ import Head from 'next/head'
 import Link from 'next/link'
 import axios from 'axios'
 import { Form } from 'antd'
+import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux';
 
 //components
 import Layout from 'components/global/Layout/Layout'
 import Navbar from 'components/global/Navbar/Navbar'
 import Footer from 'components/global/Footer/Footer'
-// import { gitlabLogin } from 'components/global/authentification/gitlabLogin'
 
 //css
 import * as Styled from 'styles/pages/signup'
 
+
+//store
+import { setUserAction } from 'store/actions/userActions';
+import { UserState, AuthenticationStatus } from 'store/reducers/userReducer';
+import { GlobalState } from 'store/interfaces';
+
 const SignUp = (): JSX.Element => {
+  const { user }: GlobalState = useSelector<GlobalState, GlobalState>(
+    (state) => state
+  );
+  const dispatch = useDispatch();
+
   const onFinish = (values: any): void => {
-    console.log('Success', values)
+    console.log('Success', values);
+    dispatch(setUserAction({...user, authenticationStatus: AuthenticationStatus.SUCCESS}));
     axios.post(`http://localhost:8080/register`, values)
       .then(res => {
         console.log(res.data);
