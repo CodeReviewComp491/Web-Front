@@ -17,7 +17,7 @@ export const LayoutCenter = styled.div`
 
 export const LayoutContent = styled.div`
   flex: 1;
-  overflow: scroll;
+  overflow-y: auto;
   overflow-x: hidden;
 `
 

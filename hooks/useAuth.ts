@@ -17,7 +17,7 @@ const useAuth = (): UserState => {
     dispatch(setUserAction({
       name: 'Alexis',
       email: 'alexisdesrumaux@gmail.com',
-      authenticationStatus: AuthenticationStatus.FAILED,
+      authenticationStatus: AuthenticationStatus.SUCCESS,
       token: '123',
     }));
   }, []);
