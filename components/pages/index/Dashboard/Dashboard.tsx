@@ -1,26 +1,31 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
+import { useSelector } from 'react-redux'
 import Head from 'next/head'
 
 //components
 import DashboardLayout from 'components/global/DashboardLayout/DashboardLayout'
 
+//common
+import { UserState } from 'common/types'
+
+//hooks
+import useAuth from 'hooks/useAuth'
+
 //store
-import { UserState } from 'store/reducers/userReducer'
+import { GlobalState } from 'store/interfaces'
 
-interface Props {
-  user: UserState
-}
+const Dashboard = (): JSX.Element => {
+  const { user } = useSelector<GlobalState, GlobalState>((state) => state);  
 
-const Dashboard = ({ user }: Props): JSX.Element => {
+
   return (
     <>
       <Head>
-        <title>Code Review | {user.name}</title>
+        <title>Code Review | {user.username}</title>
       </Head>
-      <DashboardLayout>
-      </DashboardLayout>
+      <DashboardLayout keySelected={1}></DashboardLayout>
     </>
   )
 }
 
-export default Dashboard;
+export default Dashboard

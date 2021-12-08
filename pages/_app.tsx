@@ -6,12 +6,7 @@ import type { AppProps, AppContext } from 'next/app';
 //store
 import { wrapper } from 'store/store';
 
-//hooks
-import useAuth from 'hooks/useAuth';
-
-
 function MyApp({ Component, pageProps }: AppProps) {
-  useAuth();
   return <Component {...pageProps} />
 }
 

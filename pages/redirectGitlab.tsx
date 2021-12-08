@@ -1,9 +1,8 @@
 import axios from 'axios';
-import qs from 'qs';
 import React from "react";
 
 const redirectGitlab = (): JSX.Element => {
-    const clientId = "94$?jEbeNmai@n&L";
+    /*const clientId = "94$?jEbeNmai@n&L";
     const clientSecret = "secret";
 
     if (typeof window === "undefined")
@@ -49,7 +48,9 @@ const redirectGitlab = (): JSX.Element => {
             <p>client_id: {clientId}</p>
             <p>auth_code: {auth_code}</p>
         </>
-    );
+    );*/
+
+    return <></>
 };
 
 export default redirectGitlab

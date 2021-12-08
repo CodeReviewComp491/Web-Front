@@ -25,7 +25,7 @@ function clean(obj: any) {
 
 const Profile = (): JSX.Element => {
 
-  useEffect(() => {
+  /*useEffect(() => {
     fetchInfos();
     return () => console.log('unmounting...');
   }, [])
@@ -66,9 +66,9 @@ const Profile = (): JSX.Element => {
 
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed', errorInfo)
-  }
+  }*/
 
-  return (
+  /*return (
     <>
       <Head>
         <title>Code Review | Profile</title>
@@ -116,7 +116,9 @@ const Profile = (): JSX.Element => {
         <Footer />
       </Layout>
     </>
-  )
+  )*/
+
+  return <></>
 }
 
 export default Profile

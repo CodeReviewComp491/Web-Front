@@ -1,21 +1,12 @@
 import * as types from 'store/actionsTypes/userActionTypes';
 
-export enum AuthenticationStatus {
-  CHECKING,
-  SUCCESS,
-  FAILED,
-}
-
-export interface UserState {
-  email: string;
-  name: string;
-  authenticationStatus: AuthenticationStatus;
-  token: string;
-}
+//common
+import { AuthenticationStatus } from 'common/enum';
+import { UserState } from 'common/types';
 
 export const initialState: UserState = {
   email: '',
-  name: '',
+  username: '',
   authenticationStatus: AuthenticationStatus.FAILED,
   token: '',
 };

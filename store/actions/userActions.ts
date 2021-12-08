@@ -1,6 +1,6 @@
 import * as types from 'store/actionsTypes/userActionTypes';
 
-import { UserState } from 'store/reducers/userReducer';
+import { UserState } from 'common/types';
 
 export const setUserAction = (userInfos: UserState): types.SetUserAction => {
   return {

@@ -1,28 +1,56 @@
-import React from 'react'
-import Head from 'next/head'
+import React, { useState, useEffect } from 'react'
 import { useSelector } from 'react-redux'
 
 //components
 import LandingPage from 'components/pages/index/LandingPage/LandingPage'
-import Dashboard from 'components/pages/index/Dashboard/Dashboard';
+import Dashboard from 'components/pages/index/Dashboard/Dashboard'
 
 //store
-import { AuthenticationStatus } from 'store/reducers/userReducer'
 import { GlobalState } from 'store/interfaces'
 
-const Home = (): JSX.Element => {
-  const { user }: GlobalState = useSelector<GlobalState, GlobalState>(
-    (state) => state,
-  )
+//common
+import { UserState } from 'common/types'
+import { AuthenticationStatus } from 'common/enum'
 
-  if (user.authenticationStatus === AuthenticationStatus.FAILED) {
-    return (
-      <LandingPage/>
-    )
-  } else {
-    return <Dashboard user={user}/>
+//config
+import paths from 'config/routes'
+
+//backend
+import { isUserLogged } from 'backend/utils/tokenChecker'
+
+//hooks
+import useAuth from 'hooks/useAuth'
+
+export async function getServerSideProps(ctx: any) {
+  const user: UserState = await isUserLogged(ctx)
+  return {
+    props: {
+      user: user,
+    },
   }
+}
 
+interface Props {
+  user: UserState
+}
+
+const Home = ({ user }: Props): JSX.Element => {
+  const auth = useAuth()
+  const [mounted, setMounted] = useState<boolean>(false)
+
+  useEffect(() => {
+    auth.setUser(user)
+    setMounted(true)
+  }, [])
+
+  if (mounted !== true) {
+    return <></>
+  }
+  if (user.authenticationStatus === AuthenticationStatus.FAILED) {
+    return <LandingPage />
+  } else {
+    return <Dashboard />
+  }
 }
 
 export default Home
