@@ -11,51 +11,50 @@ import {
 //css
 import * as Styled from 'components/global/DashboardLayout/LeftNavbar/styles'
 
-const LeftNavbar = (): JSX.Element => {
-  const [itemSelected, setSelected] = useState<number>(1);
+interface Props {
+  keySelected: number;
+}
 
-  const handleOnItemSelected = ({ item, key, keyPath, domEvent }: any): void => {
-    setSelected(key);
-  }
+const LeftNavbar = ({ keySelected }: Props): JSX.Element => {
 
   return (
     <Styled.LeftNavbar>
       <Styled.Title>Code Review</Styled.Title>
-      <Styled.RootMenu mode="inline" onClick={handleOnItemSelected}>
+      <Styled.RootMenu mode="inline">
         <Styled.Item key="1">
-          <Styled.ItemTitle isSelected={itemSelected == 1 ? true : false}>
+          <Styled.ItemTitle isSelected={keySelected == 1 ? true : false}>
             <DashboardOutlined />
             <Styled.ItemTitleTxt>Dashboard</Styled.ItemTitleTxt>
           </Styled.ItemTitle>
         </Styled.Item>
         <Styled.SectionTitle>Review</Styled.SectionTitle>
         <Styled.Item key="2">
-          <Styled.ItemTitle isSelected={itemSelected == 2 ? true : false}>
+          <Styled.ItemTitle isSelected={keySelected == 2 ? true : false}>
             <DeploymentUnitOutlined />
             <Styled.ItemTitleTxt>Community Reviews</Styled.ItemTitleTxt>
           </Styled.ItemTitle>
         </Styled.Item>
         <Styled.Item key="3">
-          <Styled.ItemTitle isSelected={itemSelected == 3 ? true : false}>
+          <Styled.ItemTitle isSelected={keySelected == 3 ? true : false}>
             <SolutionOutlined />
             <Styled.ItemTitleTxt>Your Reviews</Styled.ItemTitleTxt>
           </Styled.ItemTitle>
         </Styled.Item>
         <Styled.Item key="4">
-          <Styled.ItemTitle isSelected={itemSelected == 4 ? true : false}>
+          <Styled.ItemTitle isSelected={keySelected == 4 ? true : false}>
             <CodeOutlined />
             <Styled.ItemTitleTxt>Ask a Review</Styled.ItemTitleTxt>
           </Styled.ItemTitle>
         </Styled.Item>
         <Styled.SectionTitle>Admin</Styled.SectionTitle>
         <Styled.Item key="5">
-          <Styled.ItemTitle isSelected={itemSelected == 5 ? true : false}>
+          <Styled.ItemTitle isSelected={keySelected == 5 ? true : false}>
             <UserOutlined />
             <Styled.ItemTitleTxt>Users</Styled.ItemTitleTxt>
           </Styled.ItemTitle>
         </Styled.Item>
         <Styled.Item key="6">
-          <Styled.ItemTitle isSelected={itemSelected == 6 ? true : false}>
+          <Styled.ItemTitle isSelected={keySelected == 6 ? true : false}>
             <UnorderedListOutlined />
             <Styled.ItemTitleTxt>Reviews</Styled.ItemTitleTxt>
           </Styled.ItemTitle>

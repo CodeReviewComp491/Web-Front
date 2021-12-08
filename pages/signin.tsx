@@ -1,10 +1,12 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
+import Cookies from 'universal-cookie';
 import Head from 'next/head'
 import Link from 'next/link'
+import { useRouter } from 'next/dist/client/router'
 import { Form, Input, Button, Checkbox } from 'antd'
 import axios from 'axios'
 import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux'
 
 //components
 import Layout from 'components/global/Layout/Layout'
@@ -16,35 +18,55 @@ import * as Styled from 'styles/pages/signin'
 import FormItem from 'antd/lib/form/FormItem'
 
 //store
-import { setUserAction } from 'store/actions/userActions';
-import { UserState, AuthenticationStatus } from 'store/reducers/userReducer';
-import { GlobalState } from 'store/interfaces';
+import { setUserAction } from 'store/actions/userActions'
+import { GlobalState } from 'store/interfaces'
+
+//common
+import { UserState } from 'common/types'
+import { AuthenticationStatus } from 'common/enum'
 
 const SignIn = (): JSX.Element => {
-
   const { user }: GlobalState = useSelector<GlobalState, GlobalState>(
-    (state) => state
-  );
-  const dispatch = useDispatch();
+    (state) => state,
+  )
+  const dispatch = useDispatch()
+  const router = useRouter();
 
-  const onFinish = (values: any): void => {
-    const token = localStorage.getItem('token');
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    };
-
-    console.log('Success', values);
-    dispatch(setUserAction({...user, authenticationStatus: AuthenticationStatus.SUCCESS}));
-    axios.post(`http://localhost:8080/login`, values)
-      .then(res => {
-        console.log(res.data);
-        localStorage.setItem('token', res.data.token);
-        axios.get(`http://localhost:8080/gitlab/me`, config)
-            .then(res => {
-                console.log(res.data)
-                location.href = `/profil`
-            })
-      })
+  const onFinish = async (values: any): Promise<void> => {
+    try {
+      const loginRes = await axios.post(`http://localhost:8080/login`, values)
+      console.log(loginRes.data)
+      if (loginRes.data === undefined || loginRes.data.token === undefined) {
+        console.log('Login failed. Try again')
+        return
+      }
+      const CRToken = loginRes.data.token
+      const cookies = new Cookies();
+      cookies.set('CRToken', CRToken, { path: '/' });
+      const config = {
+        headers: { Authorization: `Bearer ${CRToken}` },
+      }
+      const infoRes = await axios.get(
+        'http://localhost:8080/user/info/me',
+        config,
+      )
+      if ('_id' in infoRes.data) {
+        dispatch(
+          setUserAction({
+            email: infoRes.data.email,
+            username: infoRes.data.username,
+            authenticationStatus: AuthenticationStatus.SUCCESS,
+            token: CRToken,
+          }),
+        );
+        router.push('/');
+      } else {
+        console.log('Login failed. Try again')
+        return
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   const onFinishFailed = (errorInfo: any) => {
@@ -72,7 +94,7 @@ const SignIn = (): JSX.Element => {
                 rules={[{ required: true, message: 'Please input your email' }]}
                 initialValue={''}
               >
-                <Styled.Input placeholder={'Email'}/>
+                <Styled.Input placeholder={'Email'} />
               </Form.Item>
               <Form.Item
                 name="password"
@@ -81,7 +103,7 @@ const SignIn = (): JSX.Element => {
                 ]}
                 initialValue={''}
               >
-                <Styled.Input placeholder={'Password'} type={'password'}/>
+                <Styled.Input placeholder={'Password'} type={'password'} />
               </Form.Item>
               <FormItem>
                 <Styled.Submit htmlType={'submit'}>Sign In</Styled.Submit>

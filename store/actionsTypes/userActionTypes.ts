@@ -1,4 +1,4 @@
-import { UserState } from 'store/reducers/userReducer';
+import { UserState } from "common/types";
 
 export const SET_USER = 'SET_USER';
 

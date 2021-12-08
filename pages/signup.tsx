@@ -1,9 +1,10 @@
 import React from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
+import Cookies from 'universal-cookie';
+import { useRouter } from 'next/dist/client/router'
 import axios from 'axios'
 import { Form } from 'antd'
-import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
 //components
@@ -14,27 +15,52 @@ import Footer from 'components/global/Footer/Footer'
 //css
 import * as Styled from 'styles/pages/signup'
 
-
 //store
 import { setUserAction } from 'store/actions/userActions';
-import { UserState, AuthenticationStatus } from 'store/reducers/userReducer';
-import { GlobalState } from 'store/interfaces';
+
+//common
+import { AuthenticationStatus } from 'common/enum'
 
 const SignUp = (): JSX.Element => {
-  const { user }: GlobalState = useSelector<GlobalState, GlobalState>(
-    (state) => state
-  );
   const dispatch = useDispatch();
+  const router = useRouter();
 
-  const onFinish = (values: any): void => {
-    console.log('Success', values);
-    dispatch(setUserAction({...user, authenticationStatus: AuthenticationStatus.SUCCESS}));
-    axios.post(`http://localhost:8080/register`, values)
-      .then(res => {
-        console.log(res.data);
-        localStorage.setItem('token', res.data.token);
-        window.location.href = "/linkGitlab"
-      })
+  const onFinish = async(values: any): Promise<void> => {
+    try {
+      const registerRes = await axios.post('http://localhost:8080/register', values);
+      console.log(registerRes.data);
+      if (registerRes.data === undefined || registerRes.data.token === undefined) {
+        console.log('Signup failed. Try again');
+        return;
+      }
+      const CRToken = registerRes.data.token;
+      const cookies = new Cookies();
+      cookies.set('CRToken', CRToken, { path: '/' });
+      //localStorage.setItem('CRToken', CRToken);
+      const config = {
+        headers: { Authorization: `Bearer ${CRToken}` },
+      }
+      const infoRes = await axios.get(
+        'http://localhost:8080/user/info/me',
+        config,
+      )
+      if ('_id' in infoRes.data) {
+        dispatch(
+          setUserAction({
+            email: infoRes.data.email,
+            username: infoRes.data.username,
+            authenticationStatus: AuthenticationStatus.SUCCESS,
+            token: CRToken,
+          }),
+        );
+        router.push('/');
+      } else {
+        console.log('Signup failed. Try again');
+        return;
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const onFinishFailed = (errorInfo: any) => {
