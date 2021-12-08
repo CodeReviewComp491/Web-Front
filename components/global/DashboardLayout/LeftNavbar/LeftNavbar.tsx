@@ -1,4 +1,5 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
+import Link from 'next/link'
 import {
   DashboardOutlined,
   DeploymentUnitOutlined,
@@ -11,28 +12,34 @@ import {
 //css
 import * as Styled from 'components/global/DashboardLayout/LeftNavbar/styles'
 
+//config
+import paths from 'config/routes'
+
 interface Props {
-  keySelected: number;
+  keySelected: number
 }
 
 const LeftNavbar = ({ keySelected }: Props): JSX.Element => {
-
   return (
     <Styled.LeftNavbar>
       <Styled.Title>Code Review</Styled.Title>
       <Styled.RootMenu mode="inline">
         <Styled.Item key="1">
-          <Styled.ItemTitle isSelected={keySelected == 1 ? true : false}>
-            <DashboardOutlined />
-            <Styled.ItemTitleTxt>Dashboard</Styled.ItemTitleTxt>
-          </Styled.ItemTitle>
+          <Link href={paths.home.index}>
+            <Styled.ItemTitle isSelected={keySelected == 1 ? true : false}>
+              <DashboardOutlined />
+              <Styled.ItemTitleTxt>Dashboard</Styled.ItemTitleTxt>
+            </Styled.ItemTitle>
+          </Link>
         </Styled.Item>
         <Styled.SectionTitle>Review</Styled.SectionTitle>
         <Styled.Item key="2">
-          <Styled.ItemTitle isSelected={keySelected == 2 ? true : false}>
-            <DeploymentUnitOutlined />
-            <Styled.ItemTitleTxt>Community Reviews</Styled.ItemTitleTxt>
-          </Styled.ItemTitle>
+          <Link href={paths.home.communityReviews.index}>
+            <Styled.ItemTitle isSelected={keySelected == 2 ? true : false}>
+              <DeploymentUnitOutlined />
+              <Styled.ItemTitleTxt>Community Reviews</Styled.ItemTitleTxt>
+            </Styled.ItemTitle>
+          </Link>
         </Styled.Item>
         <Styled.Item key="3">
           <Styled.ItemTitle isSelected={keySelected == 3 ? true : false}>

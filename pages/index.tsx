@@ -36,14 +36,14 @@ interface Props {
 
 const Home = ({ user }: Props): JSX.Element => {
   const auth = useAuth()
-  const [mounted, setMounted] = useState<boolean>(false)
+  const [isMounted, setMounted] = useState<boolean>(false)
 
   useEffect(() => {
     auth.setUser(user)
     setMounted(true)
   }, [])
 
-  if (mounted !== true) {
+  if (isMounted !== true) {
     return <></>
   }
   if (user.authenticationStatus === AuthenticationStatus.FAILED) {
