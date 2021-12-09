@@ -25,7 +25,6 @@ const DashboardLayout = ({ children, keySelected, pageTitle }: Props): JSX.Eleme
         <Styled.LayoutCenter>
           <TopBar pageTitle={pageTitle}/>
           <Styled.LayoutContent>{children}</Styled.LayoutContent>
-          <Styled.LayoutFooter />
         </Styled.LayoutCenter>
       </Styled.Wrapper>
     </Layout>

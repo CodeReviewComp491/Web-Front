@@ -25,7 +25,7 @@ const LeftNavbar = ({ keySelected }: Props): JSX.Element => {
       <Styled.Title>Code Review</Styled.Title>
       <Styled.RootMenu mode="inline">
         <Styled.Item key="1">
-          <Link href={paths.home.index}>
+          <Link href={paths.home.index} passHref>
             <Styled.ItemTitle isSelected={keySelected == 1 ? true : false}>
               <DashboardOutlined />
               <Styled.ItemTitleTxt>Dashboard</Styled.ItemTitleTxt>
@@ -34,7 +34,7 @@ const LeftNavbar = ({ keySelected }: Props): JSX.Element => {
         </Styled.Item>
         <Styled.SectionTitle>Review</Styled.SectionTitle>
         <Styled.Item key="2">
-          <Link href={paths.home.communityReviews.index}>
+          <Link href={paths.home.communityReviews.index} passHref>
             <Styled.ItemTitle isSelected={keySelected == 2 ? true : false}>
               <DeploymentUnitOutlined />
               <Styled.ItemTitleTxt>Community Reviews</Styled.ItemTitleTxt>

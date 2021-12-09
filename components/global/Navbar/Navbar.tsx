@@ -8,7 +8,7 @@ const Navbar = (): JSX.Element => {
   return (
     <Styled.Navbar>
       <Styled.Title>
-        <Link href={'/'}>
+        <Link href={'/'} passHref>
           <Styled.TitleContent color={'white'}>
             Code{' '}
             <Styled.TitleContent color={'#6DF69C'}>Review.</Styled.TitleContent>
@@ -16,10 +16,10 @@ const Navbar = (): JSX.Element => {
         </Link>
       </Styled.Title>
       <Styled.NavBarLinks>
-        <Link href={'/signin'}>
+        <Link href={'/signin'} passHref>
           <Styled.NavBarLinkText>Sign in</Styled.NavBarLinkText>
         </Link>
-        <Link href={'/signup'}>
+        <Link href={'/signup'} passHref>
           <Styled.NavBarLinkText last>Sign up</Styled.NavBarLinkText>
         </Link>
       </Styled.NavBarLinks>

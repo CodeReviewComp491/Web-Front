@@ -39,14 +39,14 @@ interface Props {
   user: UserState
 }
 
-const communityReviews = ({ user }: Props): JSX.Element => {
+const CommunityReviews = ({ user }: Props): JSX.Element => {
   const auth = useAuth()
   const [isMounted, setMounted] = useState<boolean>(false)
 
   useEffect(() => {
     auth.setUser(user)
     setMounted(true)
-  }, [])
+  }, [auth, user])
 
   if (isMounted === false) return <></>
   return (
@@ -61,4 +61,4 @@ const communityReviews = ({ user }: Props): JSX.Element => {
   )
 }
 
-export default communityReviews
+export default CommunityReviews

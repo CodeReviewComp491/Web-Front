@@ -5,6 +5,7 @@ export const LeftNavbar = styled.div`
   width: 300px;
   height: 100%;
   background-color: #3c4b64;
+  flex-shrink: 0;
 `
 
 export const Title = styled.div`
@@ -66,8 +67,7 @@ interface ItemTitleProps {
 export const ItemTitle = styled.div`
   width: 100%;
   padding-left: 25px;
-  font-size: 15px;
-  //background-color: rgba(255, 255, 255, 0.25);
+  font-size: 20px;
   background-color: ${(props: ItemTitleProps) => props.isSelected ? "rgba(255,255,255,0.25)" : "none"};
 `;
 
@@ -77,7 +77,7 @@ export const ItemTitleTxt = styled.span`
 
 export const SectionTitle = styled.div`
   width: 100%;
-  height: 30px;
+  height: 40px;
   font-size: 15px;
   color: white;
   padding-left: 20px;

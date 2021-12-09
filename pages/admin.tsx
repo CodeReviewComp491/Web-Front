@@ -63,13 +63,6 @@ const Admin = ({ user }: Props): JSX.Element => {
     setOpen(false)
   }
 
-  useEffect(() => {
-    auth.setUser(user)
-    //if (user.role === 'admin')
-    fetchUsers()
-    setMounted(true)
-  }, [])
-
   const fetchUsers = async (): Promise<void> => {
     const config = {
       headers: { Authorization: `Bearer ${user.token}` },
@@ -82,6 +75,15 @@ const Admin = ({ user }: Props): JSX.Element => {
       console.log('Unable to connect to http://localhost:8080/user', error)
     }
   }
+
+  useEffect(() => {
+
+    auth.setUser(user)
+    //if (user.role === 'admin')
+    fetchUsers()
+    setMounted(true)
+  }, [fetchUsers, auth, user]);
+
 
   if (mounted === false) return <></>
   if (user.role !== 'user') {
@@ -111,6 +113,7 @@ const Admin = ({ user }: Props): JSX.Element => {
                   cursor: 'pointer',
                 }}
                 onClick={() => handleOpen(elem)}
+                key={i}
               >
                 <CardContent>
                   <Typography variant="h5">{elem._id}</Typography>
