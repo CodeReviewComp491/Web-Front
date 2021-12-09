@@ -25,98 +25,98 @@ function clean(obj: any) {
 
 const Profile = (): JSX.Element => {
 
-  /*useEffect(() => {
-    fetchInfos();
-    return () => console.log('unmounting...');
-  }, [])
+  // useEffect(() => {
+  //   fetchInfos();
+  //   return () => console.log('unmounting...');
+  // }, [])
 
 
-  interface Ime {
-    username: string,
-    email: string,
-  }
-  const [me, setMe] = useState(null);
+  // interface Ime {
+  //   username: string,
+  //   email: string,
+  // }
+  // const [me, setMe] = useState(null);
 
-  const fetchInfos = ((): void => {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('token');
-      const config = {
-        headers: { Authorization: `Bearer ${token}` }
-      };
-      axios.get(`http://localhost:8080/user/info/me`, config)
-      .then(res => {
-        console.log(res.data)
-        setMe(res.data)
-      })
-    }
-  });
+  // const fetchInfos = ((): void => {
+  //   if (typeof window !== 'undefined') {
+  //     const token = localStorage.getItem('token');
+  //     const config = {
+  //       headers: { Authorization: `Bearer ${token}` }
+  //     };
+  //     axios.get(`http://localhost:8080/user/info/me`, config)
+  //     .then(res => {
+  //       console.log(res.data)
+  //       setMe(res.data)
+  //     })
+  //   }
+  // });
 
-  const onFinish = (values: any): void => {
-    values = clean(values);
-    const token = localStorage.getItem('token');
-    const config = {
-      headers: { Authorization: `Bearer ${token}` }
-    };
-    axios.put(`http://localhost:8080/user/${me._id}`, values, config)
-    .then(res => {
-      console.log(res.data)
-      fetchInfos()
-    })
-  }
+  // const onFinish = (values: any): void => {
+  //   values = clean(values);
+  //   const token = localStorage.getItem('token');
+  //   const config = {
+  //     headers: { Authorization: `Bearer ${token}` }
+  //   };
+  //   axios.put(`http://localhost:8080/user/${me._id}`, values, config)
+  //   .then(res => {
+  //     console.log(res.data)
+  //     fetchInfos()
+  //   })
+  // }
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log('Failed', errorInfo)
-  }*/
+  // const onFinishFailed = (errorInfo: any) => {
+  //   console.log('Failed', errorInfo)
+  // }
 
-  /*return (
-    <>
-      <Head>
-        <title>Code Review | Profile</title>
-      </Head>
-      <Layout backgroundColor={'#161C22'}>
-        <Navbar />
-        <Styled.SignIn>
-          <Styled.SignInCenter>
-            <Styled.SignInTitle>Hello {me ? me!.username : 'nobody'} !</Styled.SignInTitle>
-            <Styled.MyForm
-              name="basic"
-              onFinish={onFinish}
-              onFinishFailed={onFinishFailed}
-              autoComplete="off"
-            >
-              <Form.Item
-                name={'username'}
-                rules={[{ required: false, message: 'Please input your email' }]}
-                initialValue={''}
-              >
-                <Styled.Input placeholder={me ? me!.username: 'name'}/>
-              </Form.Item>
-              <Form.Item
-                name={'email'}
-                rules={[{ required: false, message: 'Please input your email' }]}
-                initialValue={''}
-              >
-                <Styled.Input placeholder={me ? me!.email: 'email'}/>
-              </Form.Item>
-              <Form.Item
-                name="password"
-                rules={[
-                  { required: false, message: 'Please input your password' },
-                ]}
-                initialValue={''}
-              >
-                <Styled.Input placeholder={'********'} type={'password'}/>
-              </Form.Item>
-              <FormItem>
-                <Styled.Submit htmlType={'submit'}>Update my profile</Styled.Submit>
-              </FormItem>
-            </Styled.MyForm>
-          </Styled.SignInCenter>
-        </Styled.SignIn>
-        <Footer />
-      </Layout>
-    </>
-  )*/
+  // return (
+  //   <>
+  //     <Head>
+  //       <title>Code Review | Profile</title>
+  //     </Head>
+  //     <Layout backgroundColor={'#161C22'}>
+  //       <Navbar />
+  //       <Styled.SignIn>
+  //         <Styled.SignInCenter>
+  //           <Styled.SignInTitle>Hello {me ? me!.username : 'nobody'} !</Styled.SignInTitle>
+  //           <Styled.MyForm
+  //             name="basic"
+  //             onFinish={onFinish}
+  //             onFinishFailed={onFinishFailed}
+  //             autoComplete="off"
+  //           >
+  //             <Form.Item
+  //               name={'username'}
+  //               rules={[{ required: false, message: 'Please input your email' }]}
+  //               initialValue={''}
+  //             >
+  //               <Styled.Input placeholder={me ? me!.username: 'name'}/>
+  //             </Form.Item>
+  //             <Form.Item
+  //               name={'email'}
+  //               rules={[{ required: false, message: 'Please input your email' }]}
+  //               initialValue={''}
+  //             >
+  //               <Styled.Input placeholder={me ? me!.email: 'email'}/>
+  //             </Form.Item>
+  //             <Form.Item
+  //               name="password"
+  //               rules={[
+  //                 { required: false, message: 'Please input your password' },
+  //               ]}
+  //               initialValue={''}
+  //             >
+  //               <Styled.Input placeholder={'********'} type={'password'}/>
+  //             </Form.Item>
+  //             <FormItem>
+  //               <Styled.Submit htmlType={'submit'}>Update my profile</Styled.Submit>
+  //             </FormItem>
+  //           </Styled.MyForm>
+  //         </Styled.SignInCenter>
+  //       </Styled.SignIn>
+  //       <Footer />
+  //     </Layout>
+  //   </>
+  // )
 
   return <></>
 }

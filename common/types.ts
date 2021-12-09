@@ -5,6 +5,7 @@ export interface UserState {
   username: string;
   authenticationStatus: AuthenticationStatus;
   token: string;
+  role: string;
 }
 
 export interface NookiesType {
