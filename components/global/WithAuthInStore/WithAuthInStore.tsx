@@ -16,9 +16,10 @@ const WithAuthInStore = ({user, children}: Props): JSX.Element => {
   const [isMounted, setMounted] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log('TEST');
     auth.setUser(user);
     setMounted(true);
-  }, [auth, setMounted]);
+  }, []);
 
   if (isMounted == false)
     return <></>

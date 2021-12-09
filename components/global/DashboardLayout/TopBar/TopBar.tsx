@@ -1,9 +1,20 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Menu, Dropdown, Button } from 'antd'
+import { useRouter } from 'next/dist/client/router'
+import Cookies from 'universal-cookie'
+import Link from 'next/link';
+
+//config
+import paths from 'config/routes'
+
+//common
+import { CookieName } from 'common/enum'
 
 //store
 import { GlobalState } from 'store/interfaces'
+import { setUserAction } from 'store/actions/userActions'
+import { initialState } from 'store/reducers/userReducer'
 
 //css
 import * as Styled from 'components/global/DashboardLayout/TopBar/styles'
@@ -14,36 +25,29 @@ interface Props {
 
 const TopBar = ({ pageTitle }: Props): JSX.Element => {
   const { user } = useSelector<GlobalState, GlobalState>((state) => state)
+  const dispatch = useDispatch()
+  const router = useRouter()
+
+  const Logout = (): void => {
+    const cookies = new Cookies()
+    cookies.remove(CookieName.CRTOKEN)
+    dispatch(setUserAction(initialState))
+    router.push(paths.home.signin.index)
+  }
 
   const displayUserDropDown = (): JSX.Element => {
     return (
       <Menu>
         <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://www.antgroup.com"
-          >
-            1st menu item
-          </a>
+          <Link href={paths.home.profil.index} passHref>Profile</Link>
         </Menu.Item>
         <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://www.aliyun.com"
-          >
-            2nd menu item
-          </a>
+          <Link href={paths.home.settings.index} passHref>Settings</Link>
         </Menu.Item>
         <Menu.Item>
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://www.luohanacademy.com"
-          >
-            3rd menu item
-          </a>
+          <Styled.AvatarButtonDropdown onClick={Logout}>
+            Logout
+          </Styled.AvatarButtonDropdown>
         </Menu.Item>
       </Menu>
     )

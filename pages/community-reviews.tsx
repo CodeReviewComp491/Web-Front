@@ -46,7 +46,7 @@ const CommunityReviews = ({ user }: Props): JSX.Element => {
   useEffect(() => {
     auth.setUser(user)
     setMounted(true)
-  }, [auth, user])
+  }, [])
 
   if (isMounted === false) return <></>
   return (
