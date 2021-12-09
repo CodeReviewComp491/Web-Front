@@ -14,7 +14,7 @@ import { UserState } from 'common/types';
 import Layout from 'components/global/Layout/Layout'
 import Navbar from 'components/global/Navbar/Navbar'
 import Footer from 'components/global/Footer/Footer'
-import userCard from 'components/pages/Admin/userCard'
+import UserCard from 'components/pages/Admin/userCard'
 
 //css
 import * as Styled from 'styles/pages/signin'
@@ -81,15 +81,18 @@ const adminUsers = ({ user }: Props): JSX.Element => {
         </Head>
         <Layout backgroundColor={'#161C22'}>
           <Navbar />
-          <div> { users ? users.map((element, i) => {
-            <userCard 
-              key={i}
-              name={users[i].username}
-              email={users[i].email}
-              role={users[i].role}
-              id={users[i].id} />
-          }) : <p>Aucun user</p> }
-          </div>
+          {users & console.log(users)}
+          { users ? users.map((elem, i) => {
+              return (
+                <UserCard 
+                  key={i}
+                  name={elem.username}
+                  email={elem.email}
+                  role={elem.role}
+                  id={elem._id} />
+              )
+            }) : <p>abc</p>
+          }
           <Footer />
         </Layout>
       </>
