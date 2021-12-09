@@ -82,7 +82,7 @@ const Admin = ({ user }: Props): JSX.Element => {
     //if (user.role === 'admin')
     fetchUsers()
     setMounted(true)
-  }, [fetchUsers, auth, user]);
+  }, []);
 
 
   if (mounted === false) return <></>

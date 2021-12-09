@@ -1,5 +1,8 @@
 import styled from 'styled-components'
 
+//css
+import { NoneColorButton } from 'styles/globals'
+
 export const TopBar = styled.div`
   width: 100%;
   height: 100px;
@@ -35,4 +38,9 @@ export const Avatar = styled.div`
   background-position: center;
   background-size: contain;
   border-radius: 50px;
+  cursor: pointer;
 `
+
+export const AvatarButtonDropdown = styled(NoneColorButton)`
+  cursor: pointer;
+`;

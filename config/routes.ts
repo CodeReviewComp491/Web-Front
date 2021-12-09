@@ -9,6 +9,12 @@ const paths = {
     },
     communityReviews: {
       index: '/community-reviews',
+    },
+    profil: {
+      index: '/profil'
+    },
+    settings: {
+      index: '/settings'
     }
   }
 }
