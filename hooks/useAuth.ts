@@ -49,6 +49,7 @@ const useAuth = (): useAuthFunctionsProps => {
             username: infoRes.data.username,
             authenticationStatus: AuthenticationStatus.SUCCESS,
             token: CRToken,
+            role: infoRes.data.role,
           }),
         );
         callBack(CRToken);

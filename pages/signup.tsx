@@ -51,6 +51,7 @@ const SignUp = (): JSX.Element => {
             username: infoRes.data.username,
             authenticationStatus: AuthenticationStatus.SUCCESS,
             token: CRToken,
+            role: infoRes.data.role,
           }),
         );
         router.push('/');
@@ -111,7 +112,7 @@ const SignUp = (): JSX.Element => {
               <Form.Item>
                 <Styled.LoginMessage>
                   Already have login and password?
-                  <Link href={'/signin'}>
+                  <Link href={'/signin'} passHref>
                     <Styled.LoginMessageColor>
                       {' '}
                       Sign in

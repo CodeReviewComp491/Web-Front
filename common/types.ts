@@ -11,3 +11,13 @@ export interface UserState {
 export interface NookiesType {
   [key: string]: string;
 }
+
+export interface LastRequest {
+    name: string,
+    description: string,
+    repo_url: string,
+    stars: number,
+    teamName: string,
+    status: string,
+    thumbnail: string,
+}

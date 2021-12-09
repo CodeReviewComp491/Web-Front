@@ -57,6 +57,7 @@ const SignIn = (): JSX.Element => {
             username: infoRes.data.username,
             authenticationStatus: AuthenticationStatus.SUCCESS,
             token: CRToken,
+            role: infoRes.data.role,
           }),
         );
         router.push('/');
@@ -112,7 +113,7 @@ const SignIn = (): JSX.Element => {
             </Styled.MyForm>
             <Styled.LoginMessage>
               Don’t have an account?{' '}
-              <Link href={'/signup'}>
+              <Link href={'/signup'} passHref>
                 <Styled.LoginMessageColor> Sign up</Styled.LoginMessageColor>
               </Link>
             </Styled.LoginMessage>

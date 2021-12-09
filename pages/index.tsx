@@ -4,9 +4,7 @@ import { useSelector } from 'react-redux'
 //components
 import LandingPage from 'components/pages/index/LandingPage/LandingPage'
 import Dashboard from 'components/pages/index/Dashboard/Dashboard'
-
-//store
-import { GlobalState } from 'store/interfaces'
+import WithAuthInStore from 'components/global/WithAuthInStore/WithAuthInStore'
 
 //common
 import { UserState } from 'common/types'
@@ -19,7 +17,6 @@ import paths from 'config/routes'
 import { isUserLogged } from 'backend/utils/tokenChecker'
 
 //hooks
-import useAuth from 'hooks/useAuth'
 
 export async function getServerSideProps(ctx: any) {
   const user: UserState = await isUserLogged(ctx)
@@ -35,22 +32,19 @@ interface Props {
 }
 
 const Home = ({ user }: Props): JSX.Element => {
-  const auth = useAuth()
-  const [isMounted, setMounted] = useState<boolean>(false)
-
-  useEffect(() => {
-    auth.setUser(user)
-    setMounted(true)
-  }, [])
-
-  if (isMounted !== true) {
-    return <></>
+  const display = (): JSX.Element => {
+    if (user.authenticationStatus === AuthenticationStatus.FAILED) {
+      return <LandingPage />
+    } else {
+      return <Dashboard />
+    }
   }
-  if (user.authenticationStatus === AuthenticationStatus.FAILED) {
-    return <LandingPage />
-  } else {
-    return <Dashboard />
-  }
+
+  return (
+    <WithAuthInStore user={user}>
+      {display()}
+    </WithAuthInStore>
+  )
 }
 
 export default Home

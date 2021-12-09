@@ -9,3 +9,7 @@ export const NoneColorButton = styled.button`
     outline: none;
   }
 `;
+
+export const ClearBoth = styled.div`
+  clear: both;
+`;
