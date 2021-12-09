@@ -14,6 +14,7 @@ export const isUserLogged = async (ctx: any): Promise<UserState> => {
       username: '',
       authenticationStatus: AuthenticationStatus.FAILED,
       token: '',
+      role: '',
     }
   } else {
     const CRToken = cookies[CookieName.CRTOKEN]
@@ -31,6 +32,7 @@ export const isUserLogged = async (ctx: any): Promise<UserState> => {
           username: infoRes.data.username,
           authenticationStatus: AuthenticationStatus.SUCCESS,
           token: CRToken,
+          role: infoRes.data.role,
         }
       } else {
         return {
@@ -38,6 +40,7 @@ export const isUserLogged = async (ctx: any): Promise<UserState> => {
           username: '',
           authenticationStatus: AuthenticationStatus.FAILED,
           token: '',
+          role: '',
         }
       }
     } catch (error) {
@@ -46,6 +49,7 @@ export const isUserLogged = async (ctx: any): Promise<UserState> => {
         username: '',
         authenticationStatus: AuthenticationStatus.FAILED,
         token: '',
+        role: '',
       }
     }
   }

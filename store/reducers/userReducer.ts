@@ -9,6 +9,7 @@ export const initialState: UserState = {
   username: '',
   authenticationStatus: AuthenticationStatus.FAILED,
   token: '',
+  role: '',
 };
 
 export const userReducer = (
