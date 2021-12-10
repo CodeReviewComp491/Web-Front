@@ -26,13 +26,31 @@ import { GlobalState } from 'store/interfaces'
 import { UserState } from 'common/types'
 import { AuthenticationStatus } from 'common/enum'
 
+//config
+import paths from 'config/routes'
+
 //hooks
 import useNotifications from 'hooks/useNotifications'
 
+//backend
+import { isUserLogged } from 'backend/utils/tokenChecker'
+
+export async function getServerSideProps(ctx: any) {
+  const user: UserState = await isUserLogged(ctx)
+  if (user.authenticationStatus === AuthenticationStatus.SUCCESS) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: paths.home.index,
+      },
+    };
+  }
+  return {
+    props: {},
+  }
+}
+
 const SignIn = (): JSX.Element => {
-  const { user }: GlobalState = useSelector<GlobalState, GlobalState>(
-    (state) => state,
-  )
   const dispatch = useDispatch()
   const router = useRouter()
   const notifications = useNotifications()

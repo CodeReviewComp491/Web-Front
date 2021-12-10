@@ -20,9 +20,32 @@ import { setUserAction } from 'store/actions/userActions';
 
 //common
 import { AuthenticationStatus } from 'common/enum'
+import { UserState } from 'common/types'
+
+//config
+import paths from 'config/routes'
 
 //hooks
 import useNotifications from 'hooks/useNotifications'
+
+//backend
+import { isUserLogged } from 'backend/utils/tokenChecker'
+
+
+export async function getServerSideProps(ctx: any) {
+  const user: UserState = await isUserLogged(ctx)
+  if (user.authenticationStatus === AuthenticationStatus.SUCCESS) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: paths.home.index,
+      },
+    };
+  }
+  return {
+    props: {},
+  }
+}
 
 const SignUp = (): JSX.Element => {
   const dispatch = useDispatch();
