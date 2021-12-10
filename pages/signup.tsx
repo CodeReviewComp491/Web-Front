@@ -21,15 +21,31 @@ import { setUserAction } from 'store/actions/userActions';
 //common
 import { AuthenticationStatus } from 'common/enum'
 
+//hooks
+import useNotifications from 'hooks/useNotifications'
+
 const SignUp = (): JSX.Element => {
   const dispatch = useDispatch();
   const router = useRouter();
+  const notifications = useNotifications();
+
+  const displayIncorrectLoginNotification = (): JSX.Element => {
+    return (
+      <Styled.IncorrectLogin>
+        Username or password is already used or incorrect.
+      </Styled.IncorrectLogin>
+    )
+  }
 
   const onFinish = async(values: any): Promise<void> => {
     try {
       const registerRes = await axios.post('http://localhost:8080/register', values);
       console.log(registerRes.data);
       if (registerRes.data === undefined || registerRes.data.token === undefined) {
+        notifications.addNotifications(
+          'default',
+          displayIncorrectLoginNotification(),
+        )
         console.log('Signup failed. Try again');
         return;
       }
@@ -56,15 +72,27 @@ const SignUp = (): JSX.Element => {
         );
         router.push('/');
       } else {
+        notifications.addNotifications(
+          'default',
+          displayIncorrectLoginNotification(),
+        )
         console.log('Signup failed. Try again');
         return;
       }
     } catch (error) {
+      notifications.addNotifications(
+        'default',
+        displayIncorrectLoginNotification(),
+      )
       console.log(error);
     }
   }
 
   const onFinishFailed = (errorInfo: any) => {
+    notifications.addNotifications(
+      'default',
+      displayIncorrectLoginNotification(),
+    )
     console.log('Failed', errorInfo)
   }
 

@@ -1,5 +1,8 @@
 @import "./fonts.css";
 @import "antd/dist/antd.css";
+@import "react-notifications-component/dist/theme.css";
+@import 'animate.css/animate.min.css';
+
 
 html {
   height: 100%;
@@ -24,4 +27,10 @@ a {
 
 .ant-timeline-item-tail {
   border-left: 2px solid rgb(24 144 255 / 20%);
+}
+
+.notification__item--default {
+  background-color: transparent !important;
+  border-left: none !important;
+
 }

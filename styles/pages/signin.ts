@@ -78,3 +78,10 @@ export const LoginMessageColor = styled.span`
     cursor: pointer;
   }
 `
+
+export const IncorrectLogin = styled.div`
+  color: white;
+  background-color: red;
+  padding: 10px;
+  border-radius: 5px;
+`
