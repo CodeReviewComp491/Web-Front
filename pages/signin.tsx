@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
-import Cookies from 'universal-cookie';
+import React, { useState, useRef } from 'react'
+import Cookies from 'universal-cookie'
 import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/dist/client/router'
-import { Form, Input, Button, Checkbox } from 'antd'
+import { Form } from 'antd'
 import axios from 'axios'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import ReactNotification, { store } from 'react-notifications-component'
 
 //components
 import Layout from 'components/global/Layout/Layout'
@@ -25,24 +26,40 @@ import { GlobalState } from 'store/interfaces'
 import { UserState } from 'common/types'
 import { AuthenticationStatus } from 'common/enum'
 
+//hooks
+import useNotifications from 'hooks/useNotifications'
+
 const SignIn = (): JSX.Element => {
   const { user }: GlobalState = useSelector<GlobalState, GlobalState>(
     (state) => state,
   )
   const dispatch = useDispatch()
-  const router = useRouter();
+  const router = useRouter()
+  const notifications = useNotifications()
+
+  const displayIncorrectLoginNotification = (): JSX.Element => {
+    return (
+      <Styled.IncorrectLogin>
+        Incorrect username or password.
+      </Styled.IncorrectLogin>
+    )
+  }
 
   const onFinish = async (values: any): Promise<void> => {
     try {
       const loginRes = await axios.post(`http://localhost:8080/login`, values)
       console.log(loginRes.data)
       if (loginRes.data === undefined || loginRes.data.token === undefined) {
+        notifications.addNotifications(
+          'default',
+          displayIncorrectLoginNotification(),
+        )
         console.log('Login failed. Try again')
         return
       }
       const CRToken = loginRes.data.token
-      const cookies = new Cookies();
-      cookies.set('CRToken', CRToken, { path: '/' });
+      const cookies = new Cookies()
+      cookies.set('CRToken', CRToken, { path: '/' })
       const config = {
         headers: { Authorization: `Bearer ${CRToken}` },
       }
@@ -59,18 +76,30 @@ const SignIn = (): JSX.Element => {
             token: CRToken,
             role: infoRes.data.role,
           }),
-        );
-        router.push('/');
+        )
+        router.push('/')
       } else {
+        notifications.addNotifications(
+          'default',
+          displayIncorrectLoginNotification(),
+        )
         console.log('Login failed. Try again')
         return
       }
     } catch (error) {
+      notifications.addNotifications(
+        'default',
+        displayIncorrectLoginNotification(),
+      )
       console.log(error)
     }
   }
 
   const onFinishFailed = (errorInfo: any) => {
+    notifications.addNotifications(
+      'default',
+      displayIncorrectLoginNotification(),
+    )
     console.log('Failed', errorInfo)
   }
 
