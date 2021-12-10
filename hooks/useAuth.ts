@@ -45,6 +45,7 @@ const useAuth = (): useAuthFunctionsProps => {
       if ('_id' in infoRes.data) {
         dispatch(
           setUserAction({
+            _id: infoRes.data._id,
             email: infoRes.data.email,
             username: infoRes.data.username,
             authenticationStatus: AuthenticationStatus.SUCCESS,

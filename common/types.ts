@@ -1,6 +1,7 @@
 import { AuthenticationStatus } from "common/enum";
 
 export interface UserState {
+  _id: string;
   email: string;
   username: string;
   authenticationStatus: AuthenticationStatus;
