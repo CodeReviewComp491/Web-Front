@@ -5,6 +5,7 @@ import { AuthenticationStatus } from 'common/enum';
 import { UserState } from 'common/types';
 
 export const initialState: UserState = {
+  _id: '',
   email: '',
   username: '',
   authenticationStatus: AuthenticationStatus.FAILED,
