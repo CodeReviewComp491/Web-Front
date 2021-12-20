@@ -58,6 +58,28 @@ export const Submit = styled(Button)`
   }
 `
 
+export const SubmitRed = styled(Button)`
+  width: 370px;
+  height: 80px;
+  margin-top: 30px;
+  background-color: #FF0000;
+  font-size: 38px;
+  color: black;
+  border-color: #FF0000;
+
+  &:hover {
+    background-color: #FF0000;
+    color: black;
+    border-color: #FF0000;
+  }
+
+  &:focus {
+    background-color: #FF0000;
+    color: black;
+    border-color: #FF0000;
+  }
+`
+
 export const MyForm = styled(Form)`
   display: flex;
   flex-direction: column;

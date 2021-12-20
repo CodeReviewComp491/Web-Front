@@ -6,7 +6,7 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Modal from '@mui/material/Modal'
-import FormItem from 'antd/lib/form/FormItem'
+import Box from '@mui/material/Box';
 
 //backend
 import { isUserLogged } from 'backend/utils/tokenChecker'
@@ -14,6 +14,9 @@ import { isUserLogged } from 'backend/utils/tokenChecker'
 //common
 import { UserState } from 'common/types'
 import { AuthenticationStatus } from 'common/enum'
+
+//css
+import * as Styled from 'styles/pages/signin'
 
 //config
 import paths from 'config/routes'
@@ -25,6 +28,23 @@ import Footer from 'components/global/Footer/Footer'
 
 //hooks
 import useAuth from 'hooks/useAuth'
+import useNotifications from 'hooks/useNotifications'
+import {Form} from "antd";
+import FormItem from "antd/lib/form/FormItem";
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  height: 750,
+  width: 600,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  borderRadius: 10
+};
 
 export async function getServerSideProps(ctx: any) {
   const user: UserState = await isUserLogged(ctx);
@@ -47,7 +67,8 @@ interface Props {
   user: UserState
 }
 
-const Admin = ({ user }: Props): JSX.Element => {
+const AdminUser = ({ user }: Props): JSX.Element => {
+  const notifications = useNotifications()
   const auth = useAuth()
   const [mounted, setMounted] = useState<boolean>(false)
   const [users, setUsers] = useState<any>(null)
@@ -76,26 +97,67 @@ const Admin = ({ user }: Props): JSX.Element => {
     }
   }
 
+  const deleteUser = async () => {
+    const config = {
+      headers: { Authorization: `Bearer ${user.token}` },
+    }
+    try {
+      const res = await axios.delete(
+          `http://localhost:8080/user/${openedUser._id}`,
+          config,
+      )
+      console.log(res.data)
+      await fetchUsers()
+      handleClose()
+    } catch (error) {
+      notifications.addNotifications('danger', <>An error occured</>)
+      console.log(error)
+    }
+  }
+
+  const onFinish = async (values: any): Promise<void> => {
+    const config = {
+      headers: { Authorization: `Bearer ${user.token}` },
+    }
+    try {
+      const res = await axios.put(
+          `http://localhost:8080/user/${openedUser._id}`,
+          values,
+          config,
+      )
+      console.log(res.data)
+      await fetchUsers()
+      handleClose()
+    } catch (error) {
+      notifications.addNotifications('danger', <>An error occured</>)
+      console.log(error)
+    }
+  }
+
+  const onFinishFailed = (errorInfo: any) => {
+    console.log('Failed', errorInfo)
+    notifications.addNotifications('danger', <>An error occured</>)
+  }
+
   useEffect(() => {
 
     auth.setUser(user)
-    //if (user.role === 'admin')
-    fetchUsers()
+    if (user.role === 'admin')
+      fetchUsers()
     setMounted(true)
   }, []);
 
 
   if (mounted === false) return <></>
-  if (user.role !== 'user') {
-    //else if (user.role !== 'admin')
+  if (user.role !== 'admin') {
     return (
       <>
         <h1>Unauthorized</h1>
         <h3>You should be Admin to get access to this page</h3>
       </>
     )
-  }
-  return (
+  } else if (user.role === 'admin')
+    return (
     <>
       <Head>
         <title>Code Review | Admin users</title>
@@ -147,9 +209,44 @@ const Admin = ({ user }: Props): JSX.Element => {
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <div>
-            <h1>{openedUser}</h1>
-          </div>
+          <Box sx={style}>
+            <Styled.MyForm
+                name="basic"
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
+                autoComplete="off"
+            >
+              <Form.Item
+                  name="username"
+                  rules={[
+                    { required: false, message: 'Please input your username' },
+                  ]}
+                  initialValue={openedUser.username}
+              >
+                <Styled.Input placeholder={'Username'} />
+              </Form.Item>
+              <Form.Item
+                  name="email"
+                  rules={[{ required: false, message: 'Please input your email' }]}
+                  initialValue={openedUser.email}
+              >
+                <Styled.Input placeholder={'Email'} />
+              </Form.Item>
+              <Form.Item
+                  name="role"
+                  rules={[{ required: false, message: 'Please input your role' }]}
+                  initialValue={openedUser.role}
+              >
+                <Styled.Input placeholder={'Role'} />
+              </Form.Item>
+              <FormItem>
+                <Styled.Submit htmlType={'submit'}>Update user</Styled.Submit>
+              </FormItem>
+            </Styled.MyForm>
+            <div style={{justifyContent: "center"}}>
+              <Styled.SubmitRed onClick={deleteUser}>Delete user</Styled.SubmitRed>
+            </div>
+          </Box>
         </Modal>
         <Footer />
       </Layout>
@@ -157,4 +254,4 @@ const Admin = ({ user }: Props): JSX.Element => {
   )
 }
 
-export default Admin;
+export default AdminUser;
