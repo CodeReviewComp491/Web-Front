@@ -7,6 +7,7 @@ import {
   SolutionOutlined,
   UserOutlined,
   UnorderedListOutlined,
+  CrownOutlined,
 } from '@ant-design/icons'
 
 //css
@@ -49,19 +50,25 @@ const LeftNavbar = ({ keySelected }: Props): JSX.Element => {
         </Styled.Item>
         <Styled.Item key="4">
           <Styled.ItemTitle isSelected={keySelected == 4 ? true : false}>
+            <CrownOutlined />
+            <Styled.ItemTitleTxt>Your Projects</Styled.ItemTitleTxt>
+          </Styled.ItemTitle>
+        </Styled.Item>
+        <Styled.Item key="5">
+          <Styled.ItemTitle isSelected={keySelected == 5 ? true : false}>
             <CodeOutlined />
             <Styled.ItemTitleTxt>Ask a Review</Styled.ItemTitleTxt>
           </Styled.ItemTitle>
         </Styled.Item>
         <Styled.SectionTitle>Admin</Styled.SectionTitle>
-        <Styled.Item key="5">
-          <Styled.ItemTitle isSelected={keySelected == 5 ? true : false}>
+        <Styled.Item key="6">
+          <Styled.ItemTitle isSelected={keySelected == 6 ? true : false}>
             <UserOutlined />
             <Styled.ItemTitleTxt>Users</Styled.ItemTitleTxt>
           </Styled.ItemTitle>
         </Styled.Item>
-        <Styled.Item key="6">
-          <Styled.ItemTitle isSelected={keySelected == 6 ? true : false}>
+        <Styled.Item key="7">
+          <Styled.ItemTitle isSelected={keySelected == 7 ? true : false}>
             <UnorderedListOutlined />
             <Styled.ItemTitleTxt>Reviews</Styled.ItemTitleTxt>
           </Styled.ItemTitle>
