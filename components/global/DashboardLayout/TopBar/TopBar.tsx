@@ -1,4 +1,5 @@
 import React from 'react'
+import Router from 'next/router';
 import { useSelector, useDispatch } from 'react-redux'
 import { Menu, Dropdown, Button } from 'antd'
 import Cookies from 'universal-cookie'
@@ -12,8 +13,6 @@ import { CookieName } from 'common/enum'
 
 //store
 import { GlobalState } from 'store/interfaces'
-import { setUserAction } from 'store/actions/userActions'
-import { initialState } from 'store/reducers/userReducer'
 
 //css
 import * as Styled from 'components/global/DashboardLayout/TopBar/styles'
@@ -29,7 +28,7 @@ const TopBar = ({ pageTitle }: Props): JSX.Element => {
   const Logout = (): void => {
     const cookies = new Cookies()
     cookies.remove(CookieName.CRTOKEN)
-    dispatch(setUserAction(initialState))
+    Router.push(paths.home.index);
   }
 
   const displayUserDropDown = (): JSX.Element => {

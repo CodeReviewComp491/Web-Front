@@ -30,8 +30,6 @@ const WithAuthSuccess = ({
     if (user.authenticationStatus === AuthenticationStatus.FAILED) {
       if (callbackAuthFail) {
         callbackAuthFail();
-      } else {
-        Router.push(paths.home.index);
       }
     }
   }, [user.authenticationStatus]);
