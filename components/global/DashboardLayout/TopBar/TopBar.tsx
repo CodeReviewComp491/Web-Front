@@ -1,7 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Menu, Dropdown, Button } from 'antd'
-import { useRouter } from 'next/dist/client/router'
 import Cookies from 'universal-cookie'
 import Link from 'next/link';
 
@@ -26,13 +25,11 @@ interface Props {
 const TopBar = ({ pageTitle }: Props): JSX.Element => {
   const { user } = useSelector<GlobalState, GlobalState>((state) => state)
   const dispatch = useDispatch()
-  const router = useRouter()
 
   const Logout = (): void => {
     const cookies = new Cookies()
     cookies.remove(CookieName.CRTOKEN)
     dispatch(setUserAction(initialState))
-    router.push(paths.home.signin.index)
   }
 
   const displayUserDropDown = (): JSX.Element => {

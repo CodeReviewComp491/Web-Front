@@ -10,7 +10,7 @@ interface Props {
 
 const Layout = ({backgroundColor, children}: Props): JSX.Element => {
   return (
-    <Styled.Layout backgroundColor={backgroundColor}>
+    <Styled.Layout backgroundcolor={backgroundColor}>
       {children}
     </Styled.Layout>
   )
