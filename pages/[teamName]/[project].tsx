@@ -12,6 +12,7 @@ import { AuthenticationStatus } from 'common/enum'
 //components
 import DashboardLayout from 'components/global/DashboardLayout/DashboardLayout'
 import WithAuthInStore from 'components/global/WithAuthInStore/WithAuthInStore'
+import WithAuthSuccess from 'components/global/WithAuthSuccess/WithAuthSuccess'
 import Dashboard from 'components/pages/[teamName]/[project]/Dashboard/Dashboard'
 import Forum from 'components/pages/[teamName]/[project]/Forum/Forum'
 
@@ -31,7 +32,7 @@ export async function getServerSideProps(ctx: any) {
         permanent: false,
         destination: paths.home.signin.index,
       },
-    };
+    }
   }
   return {
     props: {
@@ -51,12 +52,14 @@ const Project = ({ user }: Props): JSX.Element => {
         <title>Code Review | project</title>
       </Head>
       <WithAuthInStore user={user}>
-        <DashboardLayout keySelected={0} pageTitle={'/View Review'}>
-          <Styled.Content>
-            <Dashboard project={fake}/>
-            <Forum project={fake}/>
-          </Styled.Content>
-        </DashboardLayout>
+        <WithAuthSuccess>
+          <DashboardLayout keySelected={0} pageTitle={'/View Review'}>
+            <Styled.Content>
+              <Dashboard project={fake} />
+              <Forum project={fake} />
+            </Styled.Content>
+          </DashboardLayout>
+        </WithAuthSuccess>
       </WithAuthInStore>
     </>
   )

@@ -1,11 +1,11 @@
 import styled from "styled-components";
 
 interface LayoutProps {
-  backgroundColor?: string;
+  backgroundcolor?: string;
 }
 
 export const Layout = styled.div`
   overflow: auto;
   min-height: 100vh;
-  background-color: ${(props: LayoutProps) => props.backgroundColor ? props.backgroundColor : "white"};
+  background-color: ${(props: LayoutProps) => props.backgroundcolor ? props.backgroundcolor : "white"};
 `;

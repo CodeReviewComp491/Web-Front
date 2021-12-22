@@ -2,7 +2,7 @@ import React, { useState, useRef } from 'react'
 import Cookies from 'universal-cookie'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useRouter } from 'next/dist/client/router'
+import Router from 'next/router'
 import { Form } from 'antd'
 import axios from 'axios'
 import { useEffect } from 'react'
@@ -52,7 +52,6 @@ export async function getServerSideProps(ctx: any) {
 
 const SignIn = (): JSX.Element => {
   const dispatch = useDispatch()
-  const router = useRouter()
   const notifications = useNotifications()
 
   const displayIncorrectLoginNotification = (): JSX.Element => {
@@ -96,7 +95,7 @@ const SignIn = (): JSX.Element => {
             role: infoRes.data.role,
           }),
         )
-        router.push('/')
+        Router.push('/')
       } else {
         notifications.addNotifications(
           'default',
