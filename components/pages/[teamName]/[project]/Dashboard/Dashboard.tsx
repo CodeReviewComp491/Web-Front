@@ -51,7 +51,7 @@ const Dashboard = ({ project }: Props): JSX.Element => {
           </Styled.Action>
         </Styled.ActionsCenter>
         <Link
-          href={`/${router.query.teamName}/${router.query.project}/adding-comments`}
+          href={`/review/${router.query.projectid}/adding-comments`}
         >
           <Styled.AddingCommentsButton bckColor={'#d40012'} color={'white'}>
             Adding comments

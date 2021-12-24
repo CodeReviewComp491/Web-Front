@@ -3,6 +3,11 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import dynamic from 'next/dynamic'
 import { Form, Input, Button, Radio } from 'antd'
+import axios from 'axios'
+import { useSelector } from 'react-redux'
+
+//store
+import { GlobalState } from 'store/interfaces'
 
 //common
 import { UserState } from 'common/types'
@@ -55,10 +60,27 @@ interface Props {
 
 const addingComments = ({ user }: Props): JSX.Element => {
   const router = useRouter()
-  const [form] = Form.useForm()
   const notifications = useNotifications()
+  const storeState: GlobalState = useSelector<GlobalState, GlobalState>(
+    (state) => state,
+  )
 
-  const onFinish = async (values: any): Promise<void> => {}
+  const onFinish = async (values: any): Promise<void> => {
+    const newV = {...values, reviewId: router.query.projectid};
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${storeState.user.token}` },
+      }
+      console.log(storeState.user.token);
+      const Commentres = await axios.post(
+        `http://localhost:8080/comment`,
+        newV,
+        config,
+      )
+    } catch (error) {
+      console.log(error)
+    }
+  }
 
   const displayIncorrectFormNotification = (): JSX.Element => {
     return (
@@ -91,25 +113,24 @@ const addingComments = ({ user }: Props): JSX.Element => {
               labelCol={{ span: 4 }}
               wrapperCol={{ span: 14 }}
               layout={'horizontal'}
-              form={form}
               name="basic"
               onFinish={onFinish}
               onFinishFailed={onFinishFailed}
               autoComplete="off"
             >
-              <Form.Item label="File name">
+              <Form.Item name="fileName" label="File name" required>
                 <Input placeholder="Enter the file name" />
               </Form.Item>
-              <Form.Item label="Line number">
+              <Form.Item name="line" label="Line number" required>
                 <Input placeholder="Enter the line number" />
               </Form.Item>
-              <Form.Item label="Line content">
+              <Form.Item name="lineContent" label="Line content" required>
                 <Input placeholder="Enter the line content of the line" />
               </Form.Item>
-              <Form.Item label="Line suggestions">
+              <Form.Item name="lineSuggestion" label="Line suggestions" required>
                 <Input placeholder="Enter suggestions for this line" />
               </Form.Item>
-              <Form.Item label="Comments">
+              <Form.Item name="comment" label="Comments" required>
                 <Input placeholder="Enter your comments" />
               </Form.Item>
               <Form.Item wrapperCol={{ span: 14, offset: 4 }}>
