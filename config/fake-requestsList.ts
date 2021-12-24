@@ -2,7 +2,7 @@ const fakeRequestsList = [
   {
     name: 'UnityIronPython',
     description: 'IronPython integration in Unity',
-    repo_url: 'test',
+    repoUrl: 'test',
     stars: 1,
     teamName: 'voxel-tech',
     status: 'Pending',
@@ -11,7 +11,7 @@ const fakeRequestsList = [
   {
     name: 'brave-browser',
     description: 'Next generation Brave Browser for Android, Linux, MacOS, Windows',
-    repo_url: 'test',
+    repoUrl: 'test',
     teamName: 'brave',
     stars: 9929,
     status: 'Pending',
@@ -20,7 +20,7 @@ const fakeRequestsList = [
   {
     name: 'elrond-go',
     description: 'Next generation Brave Browser for Android, Linux, MacOS, Windows',
-    repo_url: 'test',
+    repoUrl: 'test',
     stars: 645,
     teamName: 'ElrondNetwork',
     status: 'Pending',

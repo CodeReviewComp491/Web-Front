@@ -16,7 +16,7 @@ export interface NookiesType {
 export interface LastRequest {
     name: string,
     description: string,
-    repo_url: string,
+    repoUrl: string,
     stars: number,
     teamName: string,
     status: string,
