@@ -28,7 +28,7 @@ const Request = ({ lastRequest }: Props): JSX.Element => {
         <Popover content={displayFullTitle}>
           <Styled.Title>
             {lastRequest.teamName} /{' '}
-            <Link href={`${lastRequest.teamName}/${lastRequest.name}`} passHref><Styled.ProjectName>{lastRequest.name}</Styled.ProjectName></Link>
+            <Link href={`${lastRequest.teamName}/${lastRequest.name}/`} passHref><Styled.ProjectName>{lastRequest.name}</Styled.ProjectName></Link>
           </Styled.Title>
         </Popover>
         <Styled.Stars>

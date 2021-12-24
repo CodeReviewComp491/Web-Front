@@ -20,7 +20,7 @@ import Forum from 'components/pages/[teamName]/[project]/Forum/Forum'
 import { isUserLogged } from 'backend/utils/tokenChecker'
 
 //css
-import * as Styled from 'styles/pages/[teamName]/[project]'
+import * as Styled from 'styles/pages/[teamName]/[project]/[projectid]'
 
 const fake = fakeRequestsList[0]
 
@@ -46,6 +46,7 @@ interface Props {
 }
 
 const Project = ({ user }: Props): JSX.Element => {
+
   return (
     <>
       <Head>

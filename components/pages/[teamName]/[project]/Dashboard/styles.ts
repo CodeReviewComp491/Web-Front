@@ -45,7 +45,7 @@ export const ProjectTeamName = styled.span`
 export const Actions = styled.div`
   width: 100%;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding-top: 10px;
@@ -63,7 +63,8 @@ export const ActionsCenter = styled.div`
 export const Action = styled.div`
   width: 49%;
   border: solid 1px rgba(0, 0, 0, 0.3);
-  padding-left: 5px;
+  padding: 10px;
+  padding-left: 15px;
   padding-right: 5px;
 `;
 
@@ -78,7 +79,7 @@ export const ActionDescription = styled.div`
 `;
 
 interface MyButtonProps {
-  backgroundColor: string;
+  bckColor: string;
   color: string;
 }
 
@@ -88,7 +89,7 @@ export const MyButton = styled(Button)`
   padding: 20px;
   padding-left: 10px;
   padding-right: 10px;
-  background-color: ${(props: MyButtonProps) => props.backgroundColor};
+  background-color: ${(props: MyButtonProps) => props.bckColor};
   border: none;
   color: ${(props: MyButtonProps) => props.color};
   font-size: 15px;
@@ -98,7 +99,28 @@ export const MyButton = styled(Button)`
   align-items: center;
 
   &:hover, &:focus {
-    background-color: ${(props: MyButtonProps) => props.backgroundColor};
+    background-color: ${(props: MyButtonProps) => props.bckColor};
+    color: ${(props: MyButtonProps) => props.color};
+
+  }
+`;
+
+export const AddingCommentsButton = styled(Button)`
+  margin-top: 30px;
+  padding: 20px;
+  padding-left: 80px;
+  padding-right: 80px;
+  background-color: ${(props: MyButtonProps) => props.bckColor};
+  border: none;
+  color: ${(props: MyButtonProps) => props.color};
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &:hover, &:focus {
+    background-color: ${(props: MyButtonProps) => props.bckColor};
     color: ${(props: MyButtonProps) => props.color};
 
   }

@@ -55,10 +55,12 @@ const LeftNavbar = ({ keySelected }: Props): JSX.Element => {
           </Styled.ItemTitle>
         </Styled.Item>
         <Styled.Item key="5">
-          <Styled.ItemTitle isSelected={keySelected == 5 ? true : false}>
-            <CodeOutlined />
-            <Styled.ItemTitleTxt>Ask a Review</Styled.ItemTitleTxt>
-          </Styled.ItemTitle>
+          <Link href={paths.home.askReview.index} passHref>
+            <Styled.ItemTitle isSelected={keySelected == 5 ? true : false}>
+              <CodeOutlined />
+              <Styled.ItemTitleTxt>Ask a Review</Styled.ItemTitleTxt>
+            </Styled.ItemTitle>
+          </Link>
         </Styled.Item>
         <Styled.SectionTitle>Admin</Styled.SectionTitle>
         <Styled.Item key="6">
