@@ -15,6 +15,9 @@ const paths = {
     },
     settings: {
       index: '/settings'
+    },
+    askReview: {
+      index: '/ask-review'
     }
   }
 }
