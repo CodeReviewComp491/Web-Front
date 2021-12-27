@@ -11,6 +11,7 @@ export const initialState: UserState = {
   authenticationStatus: AuthenticationStatus.FAILED,
   token: '',
   role: '',
+  isInit: false,
 };
 
 export const userReducer = (

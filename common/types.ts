@@ -7,6 +7,7 @@ export interface UserState {
   authenticationStatus: AuthenticationStatus;
   token: string;
   role: string;
+  isInit: boolean;
 }
 
 export interface NookiesType {

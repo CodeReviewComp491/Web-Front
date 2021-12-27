@@ -18,6 +18,7 @@ import FormItem from 'antd/lib/form/FormItem'
 //hooks
 import useAuth from 'hooks/useAuth'
 import useNotifications from 'hooks/useNotifications'
+import useWithAuthInStore from 'hooks/useWithAuthInStore'
 
 //backend
 import { isUserLogged } from 'backend/utils/tokenChecker'
@@ -30,7 +31,6 @@ import { AuthenticationStatus } from 'common/enum'
 import paths from 'config/routes'
 
 //store
-import { setUserAction } from 'store/actions/userActions'
 import { GlobalState } from 'store/interfaces'
 
 export async function getServerSideProps(ctx: any) {
@@ -45,7 +45,7 @@ export async function getServerSideProps(ctx: any) {
   }
   return {
     props: {
-      receivedUser: user,
+      user: user,
     },
   }
 }
@@ -62,17 +62,18 @@ export async function getServerSideProps(ctx: any) {
 }*/
 
 interface Props {
-  receivedUser: UserState
+  user: UserState
 }
 
-const Profile = ({ receivedUser }: Props): JSX.Element => {
+const Profile = ({ user }: Props): JSX.Element => {
   const notifications = useNotifications()
-  const dispatch = useDispatch()
-  const { user } = useSelector<GlobalState, GlobalState>((state) => state);
+  const storeState = useSelector<GlobalState, GlobalState>((state) => state)
+  const auth = useAuth()
+  const authInStore = useWithAuthInStore(user)
 
   const fetchInfos = async (): Promise<void> => {
     const config = {
-      headers: { Authorization: `Bearer ${user.token}` },
+      headers: { Authorization: `Bearer ${storeState.user.token}` },
     }
     try {
       const infoRes = await axios.get(
@@ -80,18 +81,17 @@ const Profile = ({ receivedUser }: Props): JSX.Element => {
         config,
       )
       if ('_id' in infoRes.data) {
-        dispatch(
-          setUserAction({
-            _id: infoRes.data._id,
-            email: infoRes.data.email,
-            username: infoRes.data.username,
-            authenticationStatus: AuthenticationStatus.SUCCESS,
-            token: user.token,
-            role: infoRes.data.role,
-          }),
-        )
-        notifications.addNotifications("success", <>Success</>);
-
+        const newUser: UserState = {
+          _id: infoRes.data._id,
+          email: infoRes.data.email,
+          username: infoRes.data.username,
+          authenticationStatus: AuthenticationStatus.SUCCESS,
+          token: storeState.user.token,
+          role: infoRes.data.role,
+          isInit: true,
+        }
+        auth.setUser(newUser)
+        notifications.addNotifications('success', <>Success</>)
       } else {
         notifications.addNotifications('danger', <>An error occured</>)
         console.log('An error occured')
@@ -99,17 +99,17 @@ const Profile = ({ receivedUser }: Props): JSX.Element => {
       }
     } catch (error) {
       notifications.addNotifications('danger', <>An error occured</>)
-      console.log(error);
+      console.log(error)
     }
   }
 
   const onFinish = async (values: any): Promise<void> => {
     const config = {
-      headers: { Authorization: `Bearer ${user.token}` },
+      headers: { Authorization: `Bearer ${storeState.user.token}` },
     }
     try {
       const res = await axios.put(
-        `http://localhost:8080/user/${user._id}`,
+        `http://localhost:8080/user/${storeState.user._id}`,
         values,
         config,
       )
@@ -127,7 +127,11 @@ const Profile = ({ receivedUser }: Props): JSX.Element => {
   }
 
   return (
-    <WithAuthInStore user={receivedUser}>
+    <WithAuthInStore
+      authInStore={authInStore}
+      mustAuthBeSuccess={true}
+      onAuthFailRedirect={paths.home.signin.index}
+    >
       <Head>
         <title>Code Review | Profile</title>
       </Head>
@@ -181,6 +185,62 @@ const Profile = ({ receivedUser }: Props): JSX.Element => {
       </Layout>
     </WithAuthInStore>
   )
+
+  /*return (
+    <WithAuthInStore user={receivedUser}>
+      <Head>
+        <title>Code Review | Profile</title>
+      </Head>
+      <Layout backgroundColor={'#161C22'}>
+        <SimpleNavbar />
+        <Styled.SignIn>
+          <Styled.SignInCenter>
+            <Styled.SignInTitle>Hello {user.username} !</Styled.SignInTitle>
+            <Styled.MyForm
+              name="basic"
+              onFinish={onFinish}
+              onFinishFailed={onFinishFailed}
+              autoComplete="off"
+            >
+              <Form.Item
+                name={'username'}
+                rules={[
+                  { required: false, message: 'Please input your email' },
+                ]}
+                initialValue={''}
+              >
+                <Styled.Input placeholder={user.username} />
+              </Form.Item>
+              <Form.Item
+                name={'email'}
+                rules={[
+                  { required: false, message: 'Please input your email' },
+                ]}
+                initialValue={''}
+              >
+                <Styled.Input placeholder={user.email} />
+              </Form.Item>
+              <Form.Item
+                name="password"
+                rules={[
+                  { required: false, message: 'Please input your password' },
+                ]}
+                initialValue={''}
+              >
+                <Styled.Input placeholder={'********'} type={'password'} />
+              </Form.Item>
+              <FormItem>
+                <Styled.Submit htmlType={'submit'}>
+                  Update my profile
+                </Styled.Submit>
+              </FormItem>
+            </Styled.MyForm>
+          </Styled.SignInCenter>
+        </Styled.SignIn>
+        <Footer />
+      </Layout>
+    </WithAuthInStore>
+  )*/
 
   // useEffect(() => {
   //   fetchInfos();

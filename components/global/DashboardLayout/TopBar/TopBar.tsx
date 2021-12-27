@@ -23,12 +23,11 @@ interface Props {
 
 const TopBar = ({ pageTitle }: Props): JSX.Element => {
   const { user } = useSelector<GlobalState, GlobalState>((state) => state)
-  const dispatch = useDispatch()
 
   const Logout = (): void => {
     const cookies = new Cookies()
     cookies.remove(CookieName.CRTOKEN)
-    Router.push(paths.home.index);
+    Router.reload();
   }
 
   const displayUserDropDown = (): JSX.Element => {

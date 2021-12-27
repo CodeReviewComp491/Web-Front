@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react'
 import LandingPage from 'components/pages/index/LandingPage/LandingPage'
 import Dashboard from 'components/pages/index/Dashboard/Dashboard'
 import WithAuthInStore from 'components/global/WithAuthInStore/WithAuthInStore'
-import WithAuthSuccess from 'components/global/WithAuthSuccess/WithAuthSuccess'
 
 //common
 import { UserState } from 'common/types'
@@ -12,6 +11,9 @@ import { AuthenticationStatus } from 'common/enum'
 
 //backend
 import { isUserLogged } from 'backend/utils/tokenChecker'
+
+//hooks
+import useWithAuthInStore from 'hooks/useWithAuthInStore'
 
 export async function getServerSideProps(ctx: any) {
   const user: UserState = await isUserLogged(ctx)
@@ -27,11 +29,15 @@ interface Props {
 }
 
 const Home = ({ user }: Props): JSX.Element => {
+  const authInStore = useWithAuthInStore(user)
+
   return (
-    <WithAuthInStore user={user}>
-      <WithAuthSuccess renderAuthFail={() => <LandingPage/>}>
-        <Dashboard/>
-      </WithAuthSuccess>
+    <WithAuthInStore
+      authInStore={authInStore}
+      mustAuthBeSuccess={true}
+      renderAuthFail={() => <LandingPage />}
+    >
+      <Dashboard />
     </WithAuthInStore>
   )
 }

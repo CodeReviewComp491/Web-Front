@@ -1,29 +1,44 @@
-import React, {useState, useEffect} from 'react';
-
-//common
-import { UserState } from 'common/types';
+import React from 'react'
+import Router from 'next/router'
 
 //hooks
-import useAuth from 'hooks/useAuth';
+import { UseWithAuthInStoreReturnProps } from 'hooks/useWithAuthInStore'
 
 interface Props {
-  user: UserState
-  children: React.ReactNode;
+  authInStore: UseWithAuthInStoreReturnProps
+  mustAuthBeSuccess?: boolean
+  renderAuthFail?: () => JSX.Element
+  onAuthFailRedirect?: string
+  children: React.ReactNode
 }
 
-const WithAuthInStore = ({user, children}: Props): JSX.Element => {
-  const auth = useAuth();
-  const [isMounted, setMounted] = useState<boolean>(false);
-
-  useEffect(() => {
-    console.log('TEST');
-    auth.setUser(user);
-    setMounted(true);
-  }, []);
-
-  if (isMounted == false)
+const WithAuthInStore = ({
+  authInStore,
+  mustAuthBeSuccess,
+  children,
+  renderAuthFail,
+  onAuthFailRedirect,
+}: Props): JSX.Element => {
+  if (authInStore.isAuthInStore) {
+    if (mustAuthBeSuccess) {
+      if (authInStore.isAuthSuccess) {
+        return <>{children}</>
+      } else {
+        if (renderAuthFail) {
+          return renderAuthFail()
+        } else if (onAuthFailRedirect) {
+          Router.push(onAuthFailRedirect);
+          return <></>;
+        } else {
+          return <></>
+        }
+      }
+    } else {
+      return <>{children}</>
+    }
+  } else {
     return <></>
-  return <>{children}</>
+  }
 }
 
-export default WithAuthInStore;
+export default WithAuthInStore

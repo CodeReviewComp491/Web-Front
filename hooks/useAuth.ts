@@ -51,6 +51,7 @@ const useAuth = (): useAuthFunctionsProps => {
             authenticationStatus: AuthenticationStatus.SUCCESS,
             token: CRToken,
             role: infoRes.data.role,
+            isInit: true,
           }),
         );
         callBack(CRToken);
