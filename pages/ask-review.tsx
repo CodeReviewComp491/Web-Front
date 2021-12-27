@@ -1,26 +1,33 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Form, Input, Button, Radio } from 'antd'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
+import Head from 'next/head'
 
 //store
 import { GlobalState } from 'store/interfaces'
 
 //hooks
 import useNotifications from 'hooks/useNotifications'
+import useWithAuthInStore from 'hooks/useWithAuthInStore'
 
 //common
 import { UserState } from 'common/types'
-import { AuthenticationStatus } from 'common/enum'
+import { AuthenticationStatus, Skills } from 'common/enum'
 
 //config
 import paths from 'config/routes'
 
 //backend
 import { isUserLogged } from 'backend/utils/tokenChecker'
+
+//components
 import WithAuthInStore from 'components/global/WithAuthInStore/WithAuthInStore'
-import WithAuthSuccess from 'components/global/WithAuthSuccess/WithAuthSuccess'
 import DashboardLayout from 'components/global/DashboardLayout/DashboardLayout'
+import ObjectiveButtons, {
+  Objectives,
+} from 'components/pages/ask-review/ObjectiveButtons/ObjectiveButtons'
+import SkillsSelectors from 'components/pages/ask-review/SkillsSelectors/SkillsSelectors'
 
 //css
 import * as Styled from 'styles/pages/ask-review'
@@ -47,80 +54,145 @@ interface Props {
 }
 
 const AskReview = ({ user }: Props): JSX.Element => {
-  const [form] = Form.useForm()
   const notifications = useNotifications()
+  const authInStore = useWithAuthInStore(user)
   const storeState: GlobalState = useSelector<GlobalState, GlobalState>(
     (state) => state,
   )
+  const [form] = Form.useForm()
 
   const onFinish = async (values: any): Promise<void> => {
     console.log(values)
-    const newV = {...values, userId: storeState.user._id}
+    const newV = { ...values, userId: storeState.user._id, status: 'pending' }
     try {
       const config = {
         headers: { Authorization: `Bearer ${storeState.user.token}` },
       }
-      console.log(storeState.user.token);
+      console.log(storeState.user.token)
       const Askres = await axios.post(
         `http://localhost:8080/review`,
         newV,
         config,
       )
+      notifications.addNotifications('success', <p>Your project is successfuly submited!</p>)
     } catch (error) {
-      console.log(error)
+      console.log(error);
+      notifications.addNotifications('danger', <p>Error. Try again</p>);
     }
   }
 
-  const displayIncorrectFormNotification = (): JSX.Element => {
-    return (
-      <Styled.IncorrectFormNotification>
-        Incorrect Form. Try again
-      </Styled.IncorrectFormNotification>
-    )
+  const onChangeObjectives = (objectives: Objectives) => {
+    const objectivesList: Array<string> = []
+    if (objectives.security) objectivesList.push('Security')
+    if (objectives.bestPractice) objectivesList.push('Best practice')
+    if (objectives.optimization) objectivesList.push('Optimization')
+    form.setFieldsValue({ objectives: objectivesList })
   }
 
-  const onFinishFailed = (errorInfo: any) => {
-    notifications.addNotifications(
-      'default',
-      displayIncorrectFormNotification(),
-    )
-    console.log('Failed', errorInfo)
+  const onChangeSkills = (skills: Array<Skills>) => {
+    form.setFieldsValue({ skillsNeeded: skills })
   }
 
   return (
-    <WithAuthInStore user={user}>
-      <WithAuthSuccess>
-        <DashboardLayout keySelected={5} pageTitle={'/ask-review'}>
-          <Form
-            labelCol={{ span: 4 }}
-            wrapperCol={{ span: 14 }}
-            layout={'horizontal'}
-            form={form}
-            name="basic"
-            onFinish={onFinish}
-            onFinishFailed={onFinishFailed}
-            autoComplete="off"
-          >
-            <Form.Item name="name" label="Name" required>
-              <Input placeholder="Enter the name of your project" />
-            </Form.Item>
-            <Form.Item name="description" label="Description" required>
-              <Input placeholder="Enter the description of your project" />
-            </Form.Item>
-            <Form.Item name="repoUrl" label="Repository URL" required>
-              <Input placeholder="Enter the repository url" />
-            </Form.Item>
-            <Form.Item name="status" label="Status" required>
-              <Input placeholder="Enter the status" />
-            </Form.Item>
-            <Form.Item name="thumbnail" wrapperCol={{ span: 14, offset: 4 }}>
-              <Button type="primary" htmlType={'submit'}>
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
-        </DashboardLayout>
-      </WithAuthSuccess>
+    <WithAuthInStore
+      authInStore={authInStore}
+      mustAuthBeSuccess={true}
+      onAuthFailRedirect={paths.home.signin.index}
+    >
+      <Head>
+        <title>Code Review | Ask a review</title>
+      </Head>
+      <DashboardLayout keySelected={5} pageTitle={'/ask-review'}>
+        <Styled.FormCenter
+          labelCol={{ span: 8 }}
+          wrapperCol={{ span: 16 }}
+          autoComplete="off"
+          onFinish={(values) => onFinish(values)}
+          form={form}
+        >
+          <Styled.FormContent>
+            <Styled.LogoCenter>
+              <Styled.Logo bckImage={'/pages/ask-review/project-icon.png'} />
+            </Styled.LogoCenter>
+            <Styled.InputsItems>
+              <Styled.NameItem
+                label="Name"
+                name="name"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your project's name",
+                  },
+                ]}
+              >
+                <Styled.NameInput
+                  placeholder={'Please enter the name of your project'}
+                />
+              </Styled.NameItem>
+              <Styled.DescriptionItem
+                label="Description"
+                name="description"
+                rules={[
+                  {
+                    required: true,
+                    message: "Please input your project's description",
+                  },
+                ]}
+              >
+                <Styled.DescriptionTextArea
+                  placeholder={'Please enter the description of your project'}
+                />
+              </Styled.DescriptionItem>
+              <Styled.RepoURLItem
+                label="Repository URL"
+                name="repoUrl"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please enter your repository url',
+                  },
+                ]}
+              >
+                <Styled.RepoURLInputBar>
+                  <Styled.RepoURLInput
+                    placeholder={'Please enter your repository url'}
+                  />
+                  <Styled.RepoURLWebsiteBar>
+                    <Styled.WebsiteIcon
+                      bckImage={'/pages/ask-review/github.png'}
+                    />
+                    <Styled.WebsiteIcon
+                      bckImage={'/pages/ask-review/gitlab.png'}
+                    />
+                  </Styled.RepoURLWebsiteBar>
+                </Styled.RepoURLInputBar>
+              </Styled.RepoURLItem>
+              <Styled.ObjectivesItem label="Objectives" name="objectives">
+                <Styled.ObjectivesCenter>
+                  <Styled.ObjectivesGroup>
+                    <ObjectiveButtons onChange={onChangeObjectives} />
+                  </Styled.ObjectivesGroup>
+                </Styled.ObjectivesCenter>
+              </Styled.ObjectivesItem>
+              <Styled.SkillsItem
+                label="Skills"
+                name="skillsNeeded"
+                rules={[
+                  {
+                    required: true,
+                    message: 'Please select required skills',
+                  },
+                ]}
+              >
+                <Styled.SkillsCenter>
+                  <SkillsSelectors onChange={onChangeSkills} />
+                </Styled.SkillsCenter>
+              </Styled.SkillsItem>
+              <Styled.Submit htmlType={'submit'}>Submit</Styled.Submit>
+            </Styled.InputsItems>
+          </Styled.FormContent>
+        </Styled.FormCenter>
+      </DashboardLayout>
     </WithAuthInStore>
   )
 }

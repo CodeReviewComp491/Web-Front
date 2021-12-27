@@ -141,7 +141,7 @@ const AdminUser = ({ user }: Props): JSX.Element => {
 
   useEffect(() => {
 
-    auth.setUser(user)
+    auth.setUser({...user, isInit: true})
     if (user.role === 'admin')
       fetchUsers()
     setMounted(true)

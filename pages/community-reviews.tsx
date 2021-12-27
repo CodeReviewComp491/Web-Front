@@ -71,18 +71,7 @@ const CommunityReviews = ({ user }: Props): JSX.Element => {
     fetch_reviews();
   }, []);
 
-  return (
-    <WithAuthInStore user={user}>
-      <WithAuthSuccess>
-        <Head>
-          <title>Code Review | {user.username}</title>
-        </Head>
-        <DashboardLayout keySelected={2} pageTitle={'/Community Reviews'}>
-          {JSON.stringify(res)}
-        </DashboardLayout>
-      </WithAuthSuccess>
-    </WithAuthInStore>
-  )
+  return <></>;
 }
 
 export default CommunityReviews

@@ -1,6 +1,9 @@
 import nookies from 'nookies'
 import axios from 'axios'
 
+//store
+import { initialState } from 'store/reducers/userReducer'
+
 //common
 import { UserState, NookiesType } from 'common/types'
 import { CookieName, AuthenticationStatus } from 'common/enum'
@@ -8,15 +11,7 @@ import { CookieName, AuthenticationStatus } from 'common/enum'
 export const isUserLogged = async (ctx: any): Promise<UserState> => {
   const cookies: NookiesType = nookies.get(ctx)
   if (cookies[CookieName.CRTOKEN] === undefined) {
-    
-    return {
-      _id: '',
-      email: '',
-      username: '',
-      authenticationStatus: AuthenticationStatus.FAILED,
-      token: '',
-      role: '',
-    }
+    return { ...initialState, isInit: true }
   } else {
     const CRToken = cookies[CookieName.CRTOKEN]
     const config = {
@@ -35,26 +30,13 @@ export const isUserLogged = async (ctx: any): Promise<UserState> => {
           authenticationStatus: AuthenticationStatus.SUCCESS,
           token: CRToken,
           role: infoRes.data.role,
+          isInit: true,
         }
       } else {
-        return {
-          _id: '',
-          email: '',
-          username: '',
-          authenticationStatus: AuthenticationStatus.FAILED,
-          token: '',
-          role: '',
-        }
+        return { ...initialState, isInit: true }
       }
     } catch (error) {
-      return {
-        _id: '',
-        email: '',
-        username: '',
-        authenticationStatus: AuthenticationStatus.FAILED,
-        token: '',
-        role: '',
-      }
+      return { ...initialState, isInit: true }
     }
   }
 }

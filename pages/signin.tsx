@@ -93,6 +93,7 @@ const SignIn = (): JSX.Element => {
             authenticationStatus: AuthenticationStatus.SUCCESS,
             token: CRToken,
             role: infoRes.data.role,
+            isInit: true,
           }),
         )
         Router.push('/')
