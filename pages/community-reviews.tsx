@@ -8,70 +8,82 @@ import { GlobalState } from 'store/interfaces'
 
 //components
 import DashboardLayout from 'components/global/DashboardLayout/DashboardLayout'
+import WithAuthInStore from 'components/global/WithAuthInStore/WithAuthInStore'
+import Search from 'components/pages/community-reviews/Search/Search'
+import Reviews from 'components/pages/community-reviews/Reviews/Reviews'
 
 //config
 import paths from 'config/routes'
 
 //common
-import { UserState } from 'common/types'
+import { UserState, Review, MyAxiosResponse } from 'common/types'
 import { AuthenticationStatus } from 'common/enum'
 
 //backend
 import { isUserLogged } from 'backend/utils/tokenChecker'
+import reviewService from 'backend/utils/reviewService'
 
 //hooks
 import useAuth from 'hooks/useAuth'
-import WithAuthInStore from 'components/global/WithAuthInStore/WithAuthInStore'
-import WithAuthSuccess from 'components/global/WithAuthSuccess/WithAuthSuccess'
+import useWithAuthInStore from 'hooks/useWithAuthInStore'
 
 export async function getServerSideProps(ctx: any) {
+  const redirect = {
+    redirect: {
+      permanent: false,
+      destination: paths.home.signin.index,
+    },
+  };
   const user: UserState = await isUserLogged(ctx)
   if (user.authenticationStatus === AuthenticationStatus.FAILED) {
-    return {
-      redirect: {
-        permanent: false,
-        destination: paths.home.signin.index,
-      },
-    }
+    return redirect;
   }
+  const reviewsList: Array<Review> | undefined = await reviewService.getCommunityReviews(user);
+  if (reviewsList === undefined)
+    return redirect;
   return {
     props: {
       user: user,
+      reviewsList: reviewsList,
     },
   }
 }
 
 interface Props {
-  user: UserState
+  user: UserState;
+  reviewsList: Array<Review>;
 }
 
-const CommunityReviews = ({ user }: Props): JSX.Element => {
+const CommunityReviews = ({ user, reviewsList }: Props): JSX.Element => {
   const storeState: GlobalState = useSelector<GlobalState, GlobalState>(
     (state) => state,
   )
-  const [res, setRes] = useState<any>();
-
-  const fetch_reviews = async() => {
-    const config = {
-      headers: { Authorization: `Bearer ${storeState.user.token}` },
-    }
-    try {
-      const revRes = await axios.get(
-        'http://localhost:8080/review/all',
-        config,
-      )
-      console.log(revRes);
-      setRes(revRes.data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const authInStore = useWithAuthInStore(user)
+  const [searchInput, setSearchInput] = useState<string>('');
 
   useEffect(() => {
-    fetch_reviews();
+    console.log(reviewsList);
   }, []);
 
-  return <></>;
+  const handleOnChangeSubmit = (searchKey: string) => {
+    setSearchInput(searchKey);
+  }
+
+  return (
+    <WithAuthInStore
+      authInStore={authInStore}
+      mustAuthBeSuccess={true}
+      onAuthFailRedirect={paths.home.signin.index}
+    >
+      <Head>
+        <title>Code Review | Community Reviews</title>
+      </Head>
+      <DashboardLayout keySelected={2} pageTitle={'/community-reviews'}>
+        <Search onSubmit={handleOnChangeSubmit}/>
+        <Reviews reviews={reviewsList} searchKey={searchInput}/>
+      </DashboardLayout>
+    </WithAuthInStore>
+  )
 }
 
 export default CommunityReviews

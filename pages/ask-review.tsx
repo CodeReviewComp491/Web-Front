@@ -13,7 +13,7 @@ import useWithAuthInStore from 'hooks/useWithAuthInStore'
 
 //common
 import { UserState } from 'common/types'
-import { AuthenticationStatus, Skills } from 'common/enum'
+import { AuthenticationStatus, Skills, Objectives as ObjectivesEnum } from 'common/enum'
 
 //config
 import paths from 'config/routes'
@@ -74,7 +74,7 @@ const AskReview = ({ user }: Props): JSX.Element => {
         newV,
         config,
       )
-      notifications.addNotifications('success', <p>Your project is successfuly submited!</p>)
+      notifications.addNotifications('success', <p>Your project is successfully submited!</p>)
     } catch (error) {
       console.log(error);
       notifications.addNotifications('danger', <p>Error. Try again</p>);
@@ -83,9 +83,9 @@ const AskReview = ({ user }: Props): JSX.Element => {
 
   const onChangeObjectives = (objectives: Objectives) => {
     const objectivesList: Array<string> = []
-    if (objectives.security) objectivesList.push('Security')
-    if (objectives.bestPractice) objectivesList.push('Best practice')
-    if (objectives.optimization) objectivesList.push('Optimization')
+    if (objectives.security) objectivesList.push(ObjectivesEnum.SECURITY)
+    if (objectives.bestPractice) objectivesList.push(ObjectivesEnum.BESTPRACTICE)
+    if (objectives.optimization) objectivesList.push(ObjectivesEnum.OPTIMIZATION)
     form.setFieldsValue({ objectives: objectivesList })
   }
 
@@ -112,7 +112,7 @@ const AskReview = ({ user }: Props): JSX.Element => {
         >
           <Styled.FormContent>
             <Styled.LogoCenter>
-              <Styled.Logo bckImage={'/pages/ask-review/project-icon.png'} />
+              <Styled.Logo bckImage={'/global/project-icon.png'} />
             </Styled.LogoCenter>
             <Styled.InputsItems>
               <Styled.NameItem
@@ -159,10 +159,10 @@ const AskReview = ({ user }: Props): JSX.Element => {
                   />
                   <Styled.RepoURLWebsiteBar>
                     <Styled.WebsiteIcon
-                      bckImage={'/pages/ask-review/github.png'}
+                      bckImage={'/global/github.png'}
                     />
                     <Styled.WebsiteIcon
-                      bckImage={'/pages/ask-review/gitlab.png'}
+                      bckImage={'/global/gitlab.png'}
                     />
                   </Styled.RepoURLWebsiteBar>
                 </Styled.RepoURLInputBar>

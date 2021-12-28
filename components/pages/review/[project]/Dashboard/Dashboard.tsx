@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 //css
-import * as Styled from 'components/pages/[teamName]/[project]/Dashboard/styles'
+import * as Styled from 'components/pages/review/[project]/Dashboard/styles'
 
 //common
 import { LastRequest } from 'common/types'
