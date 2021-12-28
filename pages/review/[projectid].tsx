@@ -19,8 +19,8 @@ import { AuthenticationStatus } from 'common/enum'
 import DashboardLayout from 'components/global/DashboardLayout/DashboardLayout'
 import WithAuthInStore from 'components/global/WithAuthInStore/WithAuthInStore'
 import WithAuthSuccess from 'components/global/WithAuthSuccess/WithAuthSuccess'
-import Dashboard from 'components/pages/[teamName]/[project]/Dashboard/Dashboard'
-import Forum from 'components/pages/[teamName]/[project]/Forum/Forum'
+import Dashboard from 'components/pages/review/[project]/Dashboard/Dashboard'
+import Forum from 'components/pages/review/[project]/Forum/Forum'
 
 //backend
 import { isUserLogged } from 'backend/utils/tokenChecker'

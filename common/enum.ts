@@ -22,3 +22,9 @@ export enum Skills {
   CPP = 'C++',
   CSHARP = 'C#',
 }
+
+export enum Objectives {
+  SECURITY = 'Security',
+  BESTPRACTICE = 'Best practice',
+  OPTIMIZATION = 'Optimization',
+}
