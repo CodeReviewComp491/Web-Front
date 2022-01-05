@@ -52,3 +52,24 @@ export interface OtherUser {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface ReviewCommentFile {
+  line: number;
+  lineContent: string;
+  lineSuggestion: string;
+  comment: string;
+  _id: string;
+}
+
+export interface ReviewCommentsFile {
+  fileName: string;
+  language: Skills | null;
+  feedback: Array<ReviewCommentFile>;
+  _id: string;
+}
+
+export interface ChildFunction {
+  name: string;
+  isTriggered: boolean;
+  callback: (result: any) => void;
+}

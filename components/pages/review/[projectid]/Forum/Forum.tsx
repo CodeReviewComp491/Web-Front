@@ -4,7 +4,7 @@ import React from 'react';
 import { LastRequest } from 'common/types';
 
 //css
-import * as Styled from 'components/pages/review/[project]/Forum/styles';
+import * as Styled from 'components/pages/review/[projectid]/Forum/styles';
 
 interface Props {
   project: LastRequest;
