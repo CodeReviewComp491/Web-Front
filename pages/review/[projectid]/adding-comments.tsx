@@ -3,7 +3,7 @@ import Head from 'next/head'
 import Router from 'next/router'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
-import { Form, Input, Button, Radio, Popover } from 'antd'
+import { Popover } from 'antd'
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import { LeftOutlined, RightOutlined } from '@ant-design/icons'
@@ -16,10 +16,12 @@ import {
   UserState,
   ReviewCommentsFile,
   Review,
-  ReviewCommentFile,
+  BackComment,
+  UserComments,
+  BackCommentExtended,
 } from 'common/types'
 import { AuthenticationStatus, Skills } from 'common/enum'
-import { SkillToAceLanguageTranslator } from 'common/utils'
+import { transformReceivedCommentToParsedComments } from 'common/utils'
 
 //css
 import * as Styled from 'styles/pages/review/[projectid]/adding-comments'
@@ -27,7 +29,6 @@ import * as Styled from 'styles/pages/review/[projectid]/adding-comments'
 //components
 import WithAuthInStore from 'components/global/WithAuthInStore/WithAuthInStore'
 import DashboardLayout from 'components/global/DashboardLayout/DashboardLayout'
-import FormComments from 'components/pages/review/[projectid]/adding-comments/FormComments/FormComments'
 
 //backend
 import { isUserLogged } from 'backend/utils/tokenChecker'
@@ -42,7 +43,6 @@ import { SkillProps, SkillsProps } from 'config/skills'
 //hooks
 import useNotifications from 'hooks/useNotifications'
 import useWithAuthInStore from 'hooks/useWithAuthInStore'
-import useChildFunctions from 'hooks/useChildFunctions'
 
 export async function getServerSideProps(ctx: any) {
   const user: UserState = await isUserLogged(ctx)
@@ -54,7 +54,7 @@ export async function getServerSideProps(ctx: any) {
       },
     }
   }
-  const review: Review | undefined = await getReview(user, ctx.params.projectid);
+  const review: Review | undefined = await getReview(user, ctx.params.projectid)
   if (review === undefined) {
     return {
       redirect: {
@@ -63,10 +63,24 @@ export async function getServerSideProps(ctx: any) {
       },
     }
   }
+  const userCommentsList: Array<UserComments> = transformReceivedCommentToParsedComments(
+    review,
+  )
+
+  let userComments: UserComments | null = null
+
+  for (let i = 0; i !== userCommentsList.length; i += 1) {
+    if (userCommentsList[i].userId === user._id) {
+      userComments = userCommentsList[i]
+      break
+    }
+  }
+
   return {
     props: {
       user: user,
       review: review,
+      userComments: userComments,
     },
   }
 }
@@ -81,6 +95,7 @@ const Ace = dynamic(
 interface Props {
   user: UserState
   review: Review
+  userComments: UserComments | null
 }
 
 interface State {
@@ -89,7 +104,7 @@ interface State {
   inputValueLineList: Array<string>
 }
 
-const addingComments = ({ user, review }: Props): JSX.Element => {
+const addingComments = ({ user, review, userComments }: Props): JSX.Element => {
   const notifications = useNotifications()
   const authInStore = useWithAuthInStore(user)
   const storeState: GlobalState = useSelector<GlobalState, GlobalState>(
@@ -105,6 +120,12 @@ const addingComments = ({ user, review }: Props): JSX.Element => {
     console.log(state.reviewCommentsFileList)
   }, [state.reviewCommentsFileList])
 
+  useEffect(() => {
+    if (userComments !== null) {
+      setState({ ...state, reviewCommentsFileList: userComments.comments })
+    }
+  }, [])
+
   const displayFilesList = (): JSX.Element => {
     const myReviewCommentsFileList: Array<ReviewCommentsFile> = [
       ...state.reviewCommentsFileList,
@@ -118,6 +139,7 @@ const addingComments = ({ user, review }: Props): JSX.Element => {
               <Popover placement="top" content={<>{value.fileName}</>}>
                 <Styled.FileTitle
                   isSelected={index === state.fileSelected ? true : false}
+                  onClick={() => setState({ ...state, fileSelected: index })}
                 >
                   {value.fileName === '' ? 'New title' : value.fileName}
                 </Styled.FileTitle>
@@ -130,8 +152,92 @@ const addingComments = ({ user, review }: Props): JSX.Element => {
     )
   }
 
-  const handleOnClickSubmit = () => {
-    //setIsGetFormValuesTriggered(true)
+  const deleteAComment = async (commentId: string): Promise<boolean> => {
+    const config = {
+      headers: { Authorization: `Bearer ${storeState.user.token}` },
+    }
+    try {
+      const deleteCommentRes = await axios.delete(
+        `http://localhost:8080/comment/${commentId}`,
+        config,
+      )
+      return true
+    } catch (error) {
+      console.log(error)
+      return false
+    }
+  }
+
+  const deleteAllExistingComments = async (): Promise<boolean> => {
+    const myComments: Array<BackCommentExtended> = []
+
+    for (let i = 0; i !== review.comments.length; i += 1) {
+      if (review.comments[i].ownerId === storeState.user._id) {
+        myComments.push(review.comments[i])
+      }
+    }
+
+    let check = true
+    for (let i = 0; i !== myComments.length; i += 1) {
+      check = await deleteAComment(myComments[i]._id)
+      if (check === false) break
+    }
+    return check
+  }
+
+  const sendComment = async (comment: BackComment) => {
+    const check = await deleteAllExistingComments()
+    if (check == false) {
+      notifications.addNotifications('danger', <p>Sending failed</p>)
+      return
+    }
+    const config = {
+      headers: { Authorization: `Bearer ${storeState.user.token}` },
+    }
+    try {
+      const reviewRes = await axios.post(
+        `http://localhost:8080/comment`,
+        comment,
+        config,
+      )
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  const handleOnClickSubmit = async () => {
+    for (let i = 0; i !== state.reviewCommentsFileList.length; i += 1) {
+      if (
+        state.reviewCommentsFileList[i].fileName === '' ||
+        state.reviewCommentsFileList[i].language === null
+      ) {
+        notifications.addNotifications(
+          'danger',
+          <p>Please fill in the file name and type fields</p>,
+        )
+        return
+      }
+    }
+    for (let i = 0; i !== state.reviewCommentsFileList.length; i += 1) {
+      for (
+        let j = 0;
+        j !== state.reviewCommentsFileList[i].feedback.length;
+        j += 1
+      ) {
+        const newComment: BackComment = {
+          comment: state.reviewCommentsFileList[i].feedback[j].comment,
+          lineContent: state.reviewCommentsFileList[i].feedback[j].lineContent,
+          lineSuggestion:
+            state.reviewCommentsFileList[i].feedback[j].lineSuggestion,
+          line: `${state.reviewCommentsFileList[i].feedback[j].line}`,
+          fileName: state.reviewCommentsFileList[i].fileName,
+          language: state.reviewCommentsFileList[i].language as any,
+          reviewId: review._id,
+        }
+        await sendComment(newComment)
+      }
+    }
+    Router.push(paths.home.index)
   }
 
   const handleOnChangeLanguageSelect = (value: Skills) => {
@@ -310,6 +416,18 @@ const addingComments = ({ user, review }: Props): JSX.Element => {
       ...state,
       fileSelected: state.fileSelected - 1,
       inputValueLineList: newInputValueLineList,
+    })
+  }
+
+  const handleOnClickDeleteFile = () => {
+    const myReviewCommentsFileList: Array<ReviewCommentsFile> = [
+      ...state.reviewCommentsFileList,
+    ]
+    myReviewCommentsFileList.splice(state.fileSelected, 1)
+    setState({
+      ...state,
+      reviewCommentsFileList: myReviewCommentsFileList,
+      fileSelected: 0,
     })
   }
 
@@ -497,6 +615,12 @@ const addingComments = ({ user, review }: Props): JSX.Element => {
               {displayLanguageOptions()}
             </Styled.LanguageSelect>
           </Styled.LanguageItem>
+          <Styled.DeleteFileButton
+            disabled={state.fileSelected === 0 ? true : false}
+            onClick={handleOnClickDeleteFile}
+          >
+            Delete
+          </Styled.DeleteFileButton>
         </Styled.FileForm>
       </Styled.FileSelector>
     )

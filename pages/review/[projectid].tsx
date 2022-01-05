@@ -1,8 +1,6 @@
-import Reactn, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useSelector } from 'react-redux'
-import axios from 'axios'
-import { useRouter } from 'next/router'
 
 //store
 import { GlobalState } from 'store/interfaces'
@@ -12,21 +10,27 @@ import fakeRequestsList from 'config/fake-requestsList'
 import paths from 'config/routes'
 
 //common
-import { LastRequest, UserState } from 'common/types'
+import { UserState, UserComments, Review, OtherUser } from 'common/types'
 import { AuthenticationStatus } from 'common/enum'
+import { transformReceivedCommentToParsedComments } from 'common/utils'
 
 //components
 import DashboardLayout from 'components/global/DashboardLayout/DashboardLayout'
 import WithAuthInStore from 'components/global/WithAuthInStore/WithAuthInStore'
-import WithAuthSuccess from 'components/global/WithAuthSuccess/WithAuthSuccess'
 import Dashboard from 'components/pages/review/[projectid]/Dashboard/Dashboard'
 import Forum from 'components/pages/review/[projectid]/Forum/Forum'
 
 //backend
 import { isUserLogged } from 'backend/utils/tokenChecker'
+import { getReview } from 'backend/utils/reviewService'
+import { getUserInfosById } from 'backend/utils/userService'
 
 //css
-import * as Styled from 'styles/pages/review/[project]/[projectid]'
+import * as Styled from 'styles/pages/review/[projectid]'
+
+//hooks
+import useNotifications from 'hooks/useNotifications'
+import useWithAuthInStore from 'hooks/useWithAuthInStore'
 
 const fake = fakeRequestsList[0]
 
@@ -40,35 +44,55 @@ export async function getServerSideProps(ctx: any) {
       },
     }
   }
-  try {
-  } catch (error) {}
+  const review: Review | undefined = await getReview(user, ctx.params.projectid)
+  if (review === undefined) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: paths.home.index,
+      },
+    }
+  }
+  const userCommentsList: Array<UserComments> = transformReceivedCommentToParsedComments(review);
+  const ownerReviewInfos: OtherUser | undefined = await getUserInfosById(user, review.userId);
+  if (ownerReviewInfos === undefined) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: paths.home.index,
+      },
+    }
+  }
   return {
     props: {
       user: user,
+      review: review,
+      userCommentsList: userCommentsList,
+      ownerReviewInfos: ownerReviewInfos,
     },
   }
 }
 
 interface Props {
   user: UserState
+  review: Review
+  userCommentsList: Array<UserComments>
+  ownerReviewInfos: OtherUser;
 }
 
-interface State {
-  p: any,
-  fetched: boolean
-}
-
-const Project = ({ user }: Props): JSX.Element => {
-  const [state, setState] = useState<State>({
-    p: fakeRequestsList[0],
-    fetched: false,
-  });
+const Project = ({ user, review, userCommentsList, ownerReviewInfos }: Props): JSX.Element => {
   const storeState: GlobalState = useSelector<GlobalState, GlobalState>(
     (state) => state,
   )
-  const router = useRouter();
+  const notifications = useNotifications()
+  const authInStore = useWithAuthInStore(user)
 
-  const fetch_review = async() => {
+  useEffect(() => {
+    console.log(userCommentsList);
+    console.log(ownerReviewInfos);
+  }, [])
+
+  /*const fetch_review = async () => {
     const config = {
       headers: { Authorization: `Bearer ${user.token}` },
     }
@@ -78,19 +102,19 @@ const Project = ({ user }: Props): JSX.Element => {
         `http://localhost:8080/review/${router.query.projectid}`,
         config,
       )
-      console.log(revRes.data);
+      console.log(revRes.data)
       setState({
         p: revRes.data,
         fetched: true,
       })
     } catch (error) {
-      console.log(error);
+      console.log(error)
     }
   }
 
   useEffect(() => {
-    fetch_review();
-  }, []);
+    fetch_review()
+  }, [])
 
   const display = (): JSX.Element => {
     if (!state.fetched) return <></>
@@ -100,9 +124,9 @@ const Project = ({ user }: Props): JSX.Element => {
         <Forum project={state.p} />
       </Styled.Content>
     )
-  }
+  }*/
 
-  return (
+  /*return (
     <>
       <Head>
         <title>Code Review | project</title>
@@ -113,6 +137,32 @@ const Project = ({ user }: Props): JSX.Element => {
             {display()}
           </DashboardLayout>
         </WithAuthSuccess>
+      </WithAuthInStore>
+    </>
+  )*/
+
+  const display = (): JSX.Element => {
+    return (
+      <Styled.Content>
+        <Dashboard review={review} userCommentsList={userCommentsList} ownerReviewInfos={ownerReviewInfos} />
+        {/*<Forum project={state.p} />*/}
+      </Styled.Content>
+    )
+  }
+
+  return (
+    <>
+      <WithAuthInStore
+        authInStore={authInStore}
+        mustAuthBeSuccess={true}
+        onAuthFailRedirect={paths.home.signin.index}
+      >
+        <Head>
+          <title>Code Review | Project</title>
+        </Head>
+        <DashboardLayout keySelected={0} pageTitle={`/review/${review.name.toLowerCase()}`}>
+          {display()}
+        </DashboardLayout>
       </WithAuthInStore>
     </>
   )
