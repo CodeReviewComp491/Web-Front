@@ -19,14 +19,14 @@ import { AuthenticationStatus } from 'common/enum'
 import DashboardLayout from 'components/global/DashboardLayout/DashboardLayout'
 import WithAuthInStore from 'components/global/WithAuthInStore/WithAuthInStore'
 import WithAuthSuccess from 'components/global/WithAuthSuccess/WithAuthSuccess'
-import Dashboard from 'components/pages/review/[project]/Dashboard/Dashboard'
-import Forum from 'components/pages/review/[project]/Forum/Forum'
+import Dashboard from 'components/pages/review/[projectid]/Dashboard/Dashboard'
+import Forum from 'components/pages/review/[projectid]/Forum/Forum'
 
 //backend
 import { isUserLogged } from 'backend/utils/tokenChecker'
 
 //css
-import * as Styled from 'styles/pages/[teamName]/[project]/[projectid]'
+import * as Styled from 'styles/pages/review/[project]/[projectid]'
 
 const fake = fakeRequestsList[0]
 

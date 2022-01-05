@@ -18,4 +18,22 @@ export const getCommunityReviews = async(user: UserState): Promise<Array<Review>
   }
 }
 
+export const getReview = async(user: UserState, id: string): Promise<Review | undefined> => {
+  const config = {
+    headers: { Authorization: `Bearer ${user.token}` },
+  }
+  try {
+    const reviewRes = await axios.get(
+      `http://localhost:8080/review/${id}`,
+      config,
+    )
+    if ('_id' in reviewRes.data === false)
+      return undefined;
+    return reviewRes.data;
+  } catch (error) {
+    console.log(error);
+    return undefined
+  }
+}
+
 export default {getCommunityReviews: getCommunityReviews}

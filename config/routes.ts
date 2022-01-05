@@ -27,7 +27,7 @@ const paths = {
     },
     review: {
       index: '/review',
-      id: {
+      $id: {
         index: '/review/:id',
         __query: ['review', ':id'],
       },
