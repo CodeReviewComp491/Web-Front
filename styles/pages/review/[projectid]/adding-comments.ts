@@ -5,7 +5,6 @@ import { NoneColorButton } from 'styles/globals'
 import { Form, Input, Select } from 'antd'
 import { Divider } from 'antd'
 
-
 export const IncorrectFormNotification = styled.div`
   color: white;
   background-color: red;
@@ -105,10 +104,10 @@ export const TinyFileIcon = styled.div`
 `
 
 interface FileTitleProps {
-  isSelected: boolean;
+  isSelected: boolean
 }
 
-export const FileTitle = styled.span`
+export const FileTitle = styled(NoneColorButton)`
   font-size: 13px;
   color: black;
   text-overflow: ellipsis;
@@ -116,12 +115,15 @@ export const FileTitle = styled.span`
   overflow: hidden;
   margin-top: 10px;
   max-width: 80px;
-  text-decoration: ${(props: FileTitleProps) => props.isSelected ? 'underline' : 'none'};
+  text-decoration: ${(props: FileTitleProps) =>
+    props.isSelected ? 'underline' : 'none'};
+
+  &:hover {
+    cursor: pointer;
+  }
 `
 
-export const FileListClear = ClearBoth;
-
-
+export const FileListClear = ClearBoth
 
 export const FileSelector = styled.div`
   width: 100%;
@@ -228,6 +230,25 @@ export const LanguageOptionIcon = styled.div`
 export const LanguageOptionTitle = styled.span`
   font-size: 15px;
   color: black;
+`
+
+export const DeleteFileButton = styled(Button)`
+  width: 100px;
+  height: 55px;
+  color: white;
+  font-size: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #e30017;
+  margin-left: 30px;
+
+  &:hover,
+  &:focus {
+    background-color: #e30017;
+    color: white;
+  }
 `
 
 export const FormComment = styled.div`
@@ -349,4 +370,3 @@ export const FormDeleteCommentButton = styled(NoneColorButton)`
     cursor: pointer;
   }
 `
-

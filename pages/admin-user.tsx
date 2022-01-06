@@ -6,13 +6,20 @@ import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import Grid from '@mui/material/Grid'
 import Modal from '@mui/material/Modal'
-import Box from '@mui/material/Box';
+import Box from '@mui/material/Box'
+import { useSelector } from 'react-redux'
+import {Table, Button} from 'antd';
+import Router from 'next/router'
+
+//store
+import { GlobalState } from 'store/interfaces'
 
 //backend
 import { isUserLogged } from 'backend/utils/tokenChecker'
+import { getAllUsers } from 'backend/utils/userService'
 
 //common
-import { UserState } from 'common/types'
+import { OtherUser, UserState } from 'common/types'
 import { AuthenticationStatus } from 'common/enum'
 
 //css
@@ -22,15 +29,16 @@ import * as Styled from 'styles/pages/signin'
 import paths from 'config/routes'
 
 //components
+import WithAuthInStore from 'components/global/WithAuthInStore/WithAuthInStore'
 import Layout from 'components/global/Layout/Layout'
 import Navbar from 'components/global/Navbar/Navbar'
 import Footer from 'components/global/Footer/Footer'
 
 //hooks
-import useAuth from 'hooks/useAuth'
+import useWithAuthInStore from 'hooks/useWithAuthInStore'
 import useNotifications from 'hooks/useNotifications'
-import {Form} from "antd";
-import FormItem from "antd/lib/form/FormItem";
+import { Form } from 'antd'
+import FormItem from 'antd/lib/form/FormItem'
 
 const style = {
   position: 'absolute',
@@ -43,39 +51,80 @@ const style = {
   border: '2px solid #000',
   boxShadow: 24,
   p: 4,
-  borderRadius: 10
-};
+  borderRadius: 10,
+}
 
 export async function getServerSideProps(ctx: any) {
-  const user: UserState = await isUserLogged(ctx);
+  const user: UserState = await isUserLogged(ctx)
   if (user.authenticationStatus === AuthenticationStatus.FAILED) {
     return {
       redirect: {
         permanent: false,
         destination: paths.home.signin.index,
       },
-    };
+    }
+  }
+  const userList: Array<OtherUser> | undefined = await getAllUsers(user);
+  if (userList === undefined) {
+    return {
+      redirect: {
+        permanent: false,
+        destination: paths.home.signin.index,
+      },
+    }
   }
   return {
     props: {
       user: user,
+      userList: userList,
     },
   }
 }
 
-interface Props {
-  user: UserState
+interface Data extends OtherUser {
+  key: number;
 }
 
-const AdminUser = ({ user }: Props): JSX.Element => {
+interface Props {
+  user: UserState,
+  userList: Array<OtherUser>,
+}
+
+interface State {
+  data: Array<Data>;
+}
+
+const AdminUser = ({ user, userList }: Props): JSX.Element => {
   const notifications = useNotifications()
-  const auth = useAuth()
-  const [mounted, setMounted] = useState<boolean>(false)
+  /*const [mounted, setMounted] = useState<boolean>(false)
   const [users, setUsers] = useState<any>(null)
   const [open, setOpen] = React.useState(false)
-  const [openedUser, setOpenedUser] = useState<any>();
+  const [openedUser, setOpenedUser] = useState<any>()*/
+  const authInStore = useWithAuthInStore(user)
+  const storeState: GlobalState = useSelector<GlobalState, GlobalState>(
+    (state) => state,
+  )
+  const [state, setState] = useState<State>({
+    data: [],
+  })
+  
+  const parseData = () => {
+    const newData: Array<Data> = [];
+    for (let i = 0; i !== userList.length; i += 1) {
+      newData.push({...userList[i], key: i})
+    }
+    setState({...state, data: newData});
+  }
 
-  const handleOpen = (opened: any) => {
+  useEffect(() => {
+    parseData();
+  }, []);
+
+  useEffect(() => {
+    console.log(state);
+  }, [state]);
+
+  /*const handleOpen = (opened: any) => {
     setOpenedUser(opened)
     setOpen(true)
   }
@@ -86,7 +135,7 @@ const AdminUser = ({ user }: Props): JSX.Element => {
 
   const fetchUsers = async (): Promise<void> => {
     const config = {
-      headers: { Authorization: `Bearer ${user.token}` },
+      headers: { Authorization: `Bearer ${storeState.user.token}` },
     }
     try {
       const res = await axios.get(`http://localhost:8080/user`, config)
@@ -99,12 +148,12 @@ const AdminUser = ({ user }: Props): JSX.Element => {
 
   const deleteUser = async () => {
     const config = {
-      headers: { Authorization: `Bearer ${user.token}` },
+      headers: { Authorization: `Bearer ${storeState.user.token}` },
     }
     try {
       const res = await axios.delete(
-          `http://localhost:8080/user/${openedUser._id}`,
-          config,
+        `http://localhost:8080/user/${openedUser._id}`,
+        config,
       )
       console.log(res.data)
       await fetchUsers()
@@ -117,13 +166,13 @@ const AdminUser = ({ user }: Props): JSX.Element => {
 
   const onFinish = async (values: any): Promise<void> => {
     const config = {
-      headers: { Authorization: `Bearer ${user.token}` },
+      headers: { Authorization: `Bearer ${storeState.user.token}` },
     }
     try {
       const res = await axios.put(
-          `http://localhost:8080/user/${openedUser._id}`,
-          values,
-          config,
+        `http://localhost:8080/user/${openedUser._id}`,
+        values,
+        config,
       )
       console.log(res.data)
       await fetchUsers()
@@ -140,15 +189,10 @@ const AdminUser = ({ user }: Props): JSX.Element => {
   }
 
   useEffect(() => {
+    if (storeState.user.role === 'admin') fetchUsers()
+  }, [])*/
 
-    auth.setUser({...user, isInit: true})
-    if (user.role === 'admin')
-      fetchUsers()
-    setMounted(true)
-  }, []);
-
-
-  if (mounted === false) return <></>
+  /*if (mounted === false) return <></>
   if (user.role !== 'admin') {
     return (
       <>
@@ -251,7 +295,135 @@ const AdminUser = ({ user }: Props): JSX.Element => {
         <Footer />
       </Layout>
     </>
+  )*/
+
+  const handleOnChangeInputEmail = (e: any, key: number) => {
+    const myDataList: Array<Data> = [...state.data];
+    myDataList[key].email = e.target.value;
+    setState({...state, data: myDataList});
+  }
+
+  const handleOnChangeRole = (e: any, key: number) => {
+    const myDataList: Array<Data> = [...state.data];
+    myDataList[key].role = e.target.value;
+    setState({...state, data: myDataList});
+  }
+
+  const handleOnClickDelete = async(key: number) => {
+    const config = {
+      headers: { Authorization: `Bearer ${storeState.user.token}` },
+    }
+    try {
+      const res = await axios.delete(
+        `http://localhost:8080/user/${state.data[key]._id}`,
+        config,
+      )
+      console.log(res.data)
+      Router.reload();
+    } catch (error) {
+      notifications.addNotifications('danger', <>An error occured</>)
+      console.log(error)
+    }
+  }
+
+  const handleOnClickSubmit = async(key: number) => {
+    const config = {
+      headers: { Authorization: `Bearer ${storeState.user.token}` },
+    }
+    const dataToSend = {
+      username: state.data[key].username,
+      email: state.data[key].email,
+      role: state.data[key].role,
+    }
+    try {
+      const res = await axios.put(
+        `http://localhost:8080/user/${state.data[key]._id}`,
+        dataToSend,
+        config,
+      )
+      console.log(res.data)
+      Router.reload();
+    } catch (error) {
+      notifications.addNotifications('danger', <>An error occured</>)
+      console.log(error)
+    }
+  }
+
+  const display = (): JSX.Element => {
+    const columns = [
+      {
+        title: 'Id',
+        dataIndex: '_id',
+        key: 'key',
+      },
+      {
+        title: 'Username',
+        dataIndex: 'username',
+        key: 'key'
+      },
+      {
+        title: 'Email',
+        key: 'key',
+        render: (dataRow: Data) => {
+          return (
+            <input value={dataRow.email} onChange={(e) => handleOnChangeInputEmail(e, dataRow.key)}/>
+          )
+        }
+      },
+      {
+        title: 'Role',
+        key: 'key',
+        render: (dataRow: Data) => {
+          return (
+            <input value={dataRow.role} onChange={(e) => handleOnChangeRole(e, dataRow.key)}/>
+          )
+        }
+      },
+      {
+        title: 'Submit',
+        key: 'key',
+        render: (dataRow: Data) => {
+          return (
+            <Button type={'primary'} onClick={() => handleOnClickSubmit(dataRow.key)}>Submit</Button>
+          )
+        }
+      },
+      {
+        title: 'Delete',
+        key: 'key',
+        render: (dataRow: Data) => {
+          return (
+            <Button type={'primary'} danger onClick={() => handleOnClickDelete(dataRow.key)}>Delete</Button>
+          )
+        }
+      },
+    ]
+
+    return (
+      <>
+        <Head>
+          <title>Code Review | Admin users</title>
+        </Head>
+        <Layout backgroundColor={'#161C22'}>
+          <Navbar />
+          <Table columns={columns} dataSource={state.data} />
+          <Footer />
+        </Layout>
+      </>
+    )
+  }
+
+  return (
+    <>
+      <WithAuthInStore
+        authInStore={authInStore}
+        mustAuthBeSuccess={true}
+        onAuthFailRedirect={paths.home.signin.index}
+      >
+        {display()}
+      </WithAuthInStore>
+    </>
   )
 }
 
-export default AdminUser;
+export default AdminUser

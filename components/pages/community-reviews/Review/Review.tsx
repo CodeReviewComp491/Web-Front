@@ -3,6 +3,10 @@ import { useSelector } from 'react-redux'
 import axios from 'axios'
 import Link from 'next/link'
 
+//backend
+import { transformReceivedCommentToParsedComments } from 'backend/utils/utils'
+import reviewService from 'backend/utils/reviewService'
+
 //config
 import paths from 'config/routes'
 
@@ -10,7 +14,7 @@ import paths from 'config/routes'
 import { GlobalState } from 'store/interfaces'
 
 //common
-import { Review as ReviewType, OtherUser } from 'common/types'
+import { Review as ReviewType, OtherUser, UserComments } from 'common/types'
 
 //css
 import * as Styled from 'components/pages/community-reviews/Review/styles'
@@ -40,7 +44,16 @@ const Review = ({ review }: Props): JSX.Element => {
       updatedAt: '',
     },
     isFetched: false,
-  })
+  });
+  const [userCommentsList, setUserCommentsList] = useState<Array<UserComments>>([]);
+
+  const getContributors = async() => {
+    const completeReview: ReviewType | undefined = await reviewService.getReview(storeState.user, review._id);
+    if (completeReview === undefined)
+      return;
+    const newUserCommentsList: Array<UserComments> = await transformReceivedCommentToParsedComments(storeState.user, completeReview);
+    setUserCommentsList(newUserCommentsList);
+  }
 
   const getUserFromId = async () => {
     const config = {
@@ -63,6 +76,7 @@ const Review = ({ review }: Props): JSX.Element => {
 
   useEffect(() => {
     getUserFromId()
+    getContributors();
   }, [])
 
   const getContributorsNumber = (): number => {
@@ -70,16 +84,14 @@ const Review = ({ review }: Props): JSX.Element => {
   }
 
   const displayContributors = (): JSX.Element => {
-    const contributors = [
-      ownerReviewInfos.owner.username]
 
     return (
       <Styled.Contributors>
-        {contributors.map((contributor, index) => {
+        {userCommentsList.map((contributor, index) => {
           return (
             <Styled.Contributor
               key={index}
-              bckImage={`https://ui-avatars.com/api/?background=fc032c&color=fff&name=${contributor}`}
+              bckImage={`https://ui-avatars.com/api/?background=fc032c&color=fff&name=${contributor.owner.username}`}
             />
           )
         })}
@@ -103,7 +115,7 @@ const Review = ({ review }: Props): JSX.Element => {
       <Styled.ReviewFooter>
         {displayContributors()}
         <Styled.ContributorsNumberTitle>
-          {getContributorsNumber()} collaborators
+          {userCommentsList.length} collaborators
         </Styled.ContributorsNumberTitle>
       </Styled.ReviewFooter>
     </Styled.Review>

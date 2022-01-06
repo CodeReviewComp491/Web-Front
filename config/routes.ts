@@ -30,8 +30,16 @@ const paths = {
       $id: {
         index: '/review/:id',
         __query: ['review', ':id'],
+        addingComments: {
+          index: '/review/:id/adding-comments',
+          __query: ['review', ':id', 'adding-comments'],
+        }
       },
       __query: ['review'],
+    },
+    adminUser: {
+      index: '/admin-user',
+      __query: ['admin-user'],
     }
   }
 }

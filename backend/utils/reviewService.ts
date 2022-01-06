@@ -36,4 +36,4 @@ export const getReview = async(user: UserState, id: string): Promise<Review | un
   }
 }
 
-export default {getCommunityReviews: getCommunityReviews}
+export default {getCommunityReviews: getCommunityReviews, getReview: getReview}
