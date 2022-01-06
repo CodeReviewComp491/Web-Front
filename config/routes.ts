@@ -36,6 +36,10 @@ const paths = {
         }
       },
       __query: ['review'],
+    },
+    adminUser: {
+      index: '/admin-user',
+      __query: ['admin-user'],
     }
   }
 }

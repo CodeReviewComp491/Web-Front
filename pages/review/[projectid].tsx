@@ -12,7 +12,7 @@ import paths from 'config/routes'
 //common
 import { UserState, UserComments, Review, OtherUser } from 'common/types'
 import { AuthenticationStatus } from 'common/enum'
-import { transformReceivedCommentToParsedComments } from 'common/utils'
+import { transformReceivedCommentToParsedComments } from 'backend/utils/utils'
 
 //components
 import DashboardLayout from 'components/global/DashboardLayout/DashboardLayout'
@@ -53,7 +53,7 @@ export async function getServerSideProps(ctx: any) {
       },
     }
   }
-  const userCommentsList: Array<UserComments> = transformReceivedCommentToParsedComments(review);
+  const userCommentsList: Array<UserComments> = await transformReceivedCommentToParsedComments(user, review);
   const ownerReviewInfos: OtherUser | undefined = await getUserInfosById(user, review.userId);
   if (ownerReviewInfos === undefined) {
     return {
@@ -92,60 +92,11 @@ const Project = ({ user, review, userCommentsList, ownerReviewInfos }: Props): J
     console.log(ownerReviewInfos);
   }, [])
 
-  /*const fetch_review = async () => {
-    const config = {
-      headers: { Authorization: `Bearer ${user.token}` },
-    }
-    console.log(config)
-    try {
-      const revRes = await axios.get(
-        `http://localhost:8080/review/${router.query.projectid}`,
-        config,
-      )
-      console.log(revRes.data)
-      setState({
-        p: revRes.data,
-        fetched: true,
-      })
-    } catch (error) {
-      console.log(error)
-    }
-  }
-
-  useEffect(() => {
-    fetch_review()
-  }, [])
-
-  const display = (): JSX.Element => {
-    if (!state.fetched) return <></>
-    return (
-      <Styled.Content>
-        <Dashboard project={state.p} />
-        <Forum project={state.p} />
-      </Styled.Content>
-    )
-  }*/
-
-  /*return (
-    <>
-      <Head>
-        <title>Code Review | project</title>
-      </Head>
-      <WithAuthInStore user={user}>
-        <WithAuthSuccess>
-          <DashboardLayout keySelected={0} pageTitle={'/View Review'}>
-            {display()}
-          </DashboardLayout>
-        </WithAuthSuccess>
-      </WithAuthInStore>
-    </>
-  )*/
-
   const display = (): JSX.Element => {
     return (
       <Styled.Content>
-        <Dashboard review={review} userCommentsList={userCommentsList} ownerReviewInfos={ownerReviewInfos} />
-        {/*<Forum project={state.p} />*/}
+        <Dashboard review={review} ownerReviewInfos={ownerReviewInfos} />
+        <Forum userCommentsList={userCommentsList} />
       </Styled.Content>
     )
   }

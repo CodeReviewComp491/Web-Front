@@ -21,7 +21,7 @@ import {
   BackCommentExtended,
 } from 'common/types'
 import { AuthenticationStatus, Skills } from 'common/enum'
-import { transformReceivedCommentToParsedComments } from 'common/utils'
+import { transformReceivedCommentToParsedComments } from 'backend/utils/utils'
 
 //css
 import * as Styled from 'styles/pages/review/[projectid]/adding-comments'
@@ -63,14 +63,15 @@ export async function getServerSideProps(ctx: any) {
       },
     }
   }
-  const userCommentsList: Array<UserComments> = transformReceivedCommentToParsedComments(
+  const userCommentsList: Array<UserComments> = await transformReceivedCommentToParsedComments(
+    user,
     review,
   )
 
   let userComments: UserComments | null = null
 
   for (let i = 0; i !== userCommentsList.length; i += 1) {
-    if (userCommentsList[i].userId === user._id) {
+    if (userCommentsList[i].owner._id === user._id) {
       userComments = userCommentsList[i]
       break
     }
@@ -104,7 +105,7 @@ interface State {
   inputValueLineList: Array<string>
 }
 
-const addingComments = ({ user, review, userComments }: Props): JSX.Element => {
+const AddingComments = ({ user, review, userComments }: Props): JSX.Element => {
   const notifications = useNotifications()
   const authInStore = useWithAuthInStore(user)
   const storeState: GlobalState = useSelector<GlobalState, GlobalState>(
@@ -237,7 +238,7 @@ const addingComments = ({ user, review, userComments }: Props): JSX.Element => {
         await sendComment(newComment)
       }
     }
-    Router.push(paths.home.index)
+    Router.push(`${paths.home.review.index}/${review._id}`);
   }
 
   const handleOnChangeLanguageSelect = (value: Skills) => {
@@ -661,4 +662,4 @@ const addingComments = ({ user, review, userComments }: Props): JSX.Element => {
   )
 }
 
-export default addingComments
+export default AddingComments

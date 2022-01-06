@@ -1,24 +1,30 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 //components
-import Request from 'components/pages/index/Dashboard/Request/Request'
-
-//config
-import fakeRequestsList from 'config/fake-requestsList'
+import Review from 'components/pages/community-reviews/Review/Review'
 
 //common
-import { LastRequest } from 'common/types';
+import { Review as ReviewType } from 'common/types'
 
 //css
 import * as Styled from 'components/pages/index/Dashboard/LatestRequests/styles'
 
-const LatestRequests = (): JSX.Element => {
+interface Props {
+  reviewsList: Array<ReviewType>
+}
+
+const LatestRequests = ({ reviewsList }: Props): JSX.Element => {
+
   return (
     <>
       <Styled.Title>Latest Requests</Styled.Title>
       <Styled.Requests>
-        {fakeRequestsList.map((lastRequest: LastRequest, index: number) => {
-          return <Request lastRequest={lastRequest} key={index}/>
+        {reviewsList.map((review: ReviewType, index: number) => {
+          return (
+            <Styled.Request key={index}>
+              <Review review={review} />
+            </Styled.Request>
+          )
         })}
       </Styled.Requests>
     </>

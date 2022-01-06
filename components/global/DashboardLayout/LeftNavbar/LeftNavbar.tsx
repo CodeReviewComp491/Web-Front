@@ -64,10 +64,12 @@ const LeftNavbar = ({ keySelected }: Props): JSX.Element => {
         </Styled.Item>
         <Styled.SectionTitle>Admin</Styled.SectionTitle>
         <Styled.Item key="6">
-          <Styled.ItemTitle isSelected={keySelected == 6 ? true : false}>
-            <UserOutlined />
-            <Styled.ItemTitleTxt>Users</Styled.ItemTitleTxt>
-          </Styled.ItemTitle>
+          <Link href={paths.home.adminUser.index} passHref>
+            <Styled.ItemTitle isSelected={keySelected == 6 ? true : false}>
+              <UserOutlined />
+              <Styled.ItemTitleTxt>Users</Styled.ItemTitleTxt>
+            </Styled.ItemTitle>
+          </Link>
         </Styled.Item>
         <Styled.Item key="7">
           <Styled.ItemTitle isSelected={keySelected == 7 ? true : false}>

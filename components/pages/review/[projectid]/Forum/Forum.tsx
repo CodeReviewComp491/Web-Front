@@ -1,19 +1,26 @@
 import React from 'react';
 
+//components
+import UserComments from 'components/pages/review/[projectid]/UserComments/UserComments'
+
 //common
-import { LastRequest } from 'common/types';
+import { UserComments as UserCommentsType } from 'common/types';
 
 //css
 import * as Styled from 'components/pages/review/[projectid]/Forum/styles';
 
 interface Props {
-  project: LastRequest;
+  userCommentsList: Array<UserCommentsType>
 }
 
-const Forum = ({project}: Props): JSX.Element => {
+const Forum = ({userCommentsList}: Props): JSX.Element => {
   return (
     <Styled.Forum>
-      <Styled.NoCommentsTitle>No comments found</Styled.NoCommentsTitle>
+      {userCommentsList.map((userComments, index) => {
+        return (
+          <UserComments userComments={userComments} key={index}/>
+        )
+      })}
     </Styled.Forum>
   )
 }

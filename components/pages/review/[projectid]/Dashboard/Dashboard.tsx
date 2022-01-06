@@ -20,13 +20,11 @@ import paths from 'config/routes'
 
 interface Props {
   review: Review
-  userCommentsList: Array<UserComments>
   ownerReviewInfos: OtherUser
 }
 
 const Dashboard = ({
   review,
-  userCommentsList,
   ownerReviewInfos,
 }: Props): JSX.Element => {
   const storeState: GlobalState = useSelector<GlobalState, GlobalState>(

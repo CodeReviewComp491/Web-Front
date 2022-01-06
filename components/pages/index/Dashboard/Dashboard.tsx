@@ -13,7 +13,14 @@ import { GlobalState } from 'store/interfaces'
 //css
 import * as Styled from 'components/pages/index/Dashboard/styles'
 
-const Dashboard = (): JSX.Element => {
+//common
+import { Review } from 'common/types';
+
+interface Props {
+  reviewsList: Array<Review>;
+}
+
+const Dashboard = ({reviewsList}: Props): JSX.Element => {
   const { user } = useSelector<GlobalState, GlobalState>((state) => state)
 
   return (
@@ -24,7 +31,7 @@ const Dashboard = (): JSX.Element => {
       <DashboardLayout keySelected={1} pageTitle={'/Dashboard'}>
         <Styled.Content>
           <Carousel/>
-          <LatestRequests/>
+          <LatestRequests reviewsList={reviewsList}/>
         </Styled.Content>
       </DashboardLayout>
     </>

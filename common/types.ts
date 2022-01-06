@@ -95,6 +95,6 @@ export interface BackCommentExtended extends BackComment {
 
 export interface UserComments {
   reviewId: string;
-  userId: string;
+  owner: OtherUser;
   comments: Array<ReviewCommentsFile>;
 }
